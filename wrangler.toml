@@ -1,6 +1,6 @@
 name = "kauntah"
 main = "src/index.ts"
-compatibility_date = "2024-01-01"
+compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
 [[durable_objects.bindings]]
@@ -13,12 +13,7 @@ new_classes = ["CounterDO"]
 
 [[kv_namespaces]]
 binding = "IMAGE_CACHE"
-id = "7a7833463cc246a481427f565026fcfc"
-
-[[rules]]
-type = "Data"
-globs = ["assets/**/*.png"]
-fallthrough = false
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
 
 [[unsafe.bindings]]
 name = "RATE_LIMITER"
