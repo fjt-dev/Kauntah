@@ -8,11 +8,12 @@ Cloudflare Workers上で動作するヒットカウンターです。`<img>`タ�
 
 ## プレビュー
 
-| アセット                | プレビュー                                            |
-| ----------------------- | ----------------------------------------------------- |
-| `nekomimi` (デフォルト) | ![nekomimi](./assets/preview/nekomimi_preview.png)    |
-| `blue`                  | ![blue](./assets/preview/nekomimi_preview_blue.png)   |
-| `color`                 | ![color](./assets/preview/nekomimi_preview_color.png) |
+| asset                      | バージョン | プレビュー                                             |
+| -------------------------- | ---------- | ------------------------------------------------------ |
+| `normal-150`（デフォルト） | Ver.0.91   | ![normal-150](./assets/preview/normal-150_preview.png) |
+| `blue2-150`                | Ver.0.93   | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
+| `green-100`                | Ver.0.93   | ![green-100](./assets/preview/green-100_preview.png)   |
+| `blue2-100`                | Ver.0.93   | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
 
 ## 使い方
 
@@ -61,14 +62,17 @@ Workers と Durable Objects が有効な Cloudflare アカウントが必要で�
 ```
 kauntah/
 ├── src/
-│   ├── index.ts          # Hono エントリーポイントおよびメインロジック
+│   ├── index.ts          # Hono エントリポイント・メインロジック
 │   ├── counter.ts        # Durable Object（アトミックカウンター）
-│   ├── imageService.ts   # pngjs を使用した PNG 連結
-│   └── types.ts          # 型定義、定数、バリデーション関数
+│   ├── imageService.ts   # pngjs による PNG 横結合
+│   ├── types.ts          # 型定義・定数・バリデーション関数
+│   └── assets/
+│       ├── normal-150.ts # 数字アセット（base64）
+│       ├── blue2-150.ts
+│       ├── green-100.ts
+│       └── blue2-100.ts
 ├── assets/
-│   ├── nekomimi/         # 0-9.png
-│   ├── blue/             # 0-9.png
-│   └── color/            # 0-9.png
+│   └── preview/          # プレビュー画像
 ├── wrangler.toml
 ├── package.json
 └── tsconfig.json
@@ -77,9 +81,10 @@ kauntah/
 ## 注意点
 
 - レート制限：同一 IP から 60 秒間に最大 30 リクエストまで。上限を超えた場合は `429 Too Many Requests` を返します。
+- 元の画像ファイルはリポジトリに含まれていますが、実行時には直接使用されません。`src/assets/` 以下に Base64 エンコードされた文字列として埋め込まれています。
 
 ## クレジット
 
-- ねこみみ画像：[日下こかげ](http://www.pixiv.net/member.php?id=11807) 氏制作。配布サイト「KK's WS」は現在閉鎖されています。
+- ねこみみ画像：[日下こかげ - Twitter](https://x.com/K_KOKAGE) 氏制作。配布サイト[「KK's WS」](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/)は現在閉鎖されています。
   - 詳細は「ねこみみカウンター」「日下こかげ」で検索してください。
   - 作者は非商用利用、改変、再配布を許可しています。

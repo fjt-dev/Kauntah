@@ -8,11 +8,12 @@ A hit counter running on Cloudflare Workers. Embed it with a single `<img>` tag.
 
 ## Preview
 
-| asset                | preview                                               |
-| -------------------- | ----------------------------------------------------- |
-| `nekomimi` (default) | ![nekomimi](./assets/preview/nekomimi_preview.png)    |
-| `blue`               | ![blue](./assets/preview/nekomimi_preview_blue.png)   |
-| `color`              | ![color](./assets/preview/nekomimi_preview_color.png) |
+| asset                  | version  | preview                                                |
+| ---------------------- | -------- | ------------------------------------------------------ |
+| `normal-150` (default) | Ver.0.91 | ![normal-150](./assets/preview/normal-150_preview.png) |
+| `blue2-150`            | Ver.0.93 | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
+| `green-100`            | Ver.0.93 | ![green-100](./assets/preview/green-100_preview.png)   |
+| `blue2-100`            | Ver.0.93 | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
 
 ## Usage
 
@@ -64,11 +65,14 @@ kauntah/
 │   ├── index.ts          # Hono entry point and main logic
 │   ├── counter.ts        # Durable Object (atomic counter)
 │   ├── imageService.ts   # PNG concatenation using pngjs
-│   └── types.ts          # Type definitions, constants, and validation functions
+│   ├── types.ts          # Type definitions, constants, and validation functions
+│   └── assets/
+│       ├── normal-150.ts # Digit assets (base64)
+│       ├── blue2-150.ts
+│       ├── green-100.ts
+│       └── blue2-100.ts
 ├── assets/
-│   ├── nekomimi/         # 0-9.png
-│   ├── blue/             # 0-9.png
-│   └── color/            # 0-9.png
+│   └── preview/          # Preview images
 ├── wrangler.toml
 ├── package.json
 └── tsconfig.json
@@ -77,9 +81,10 @@ kauntah/
 ## Notes
 
 - Rate limiting: Up to 30 requests per 60 seconds from the same IP. Returns `429 Too Many Requests` if exceeded.
+- The original asset images are included in the repository for reference, but are not used directly at runtime. They are embedded as Base64-encoded strings in `src/assets/`.
 
 ## Credits
 
-- Nekomimi images: Created by [Kokage Kusaka (日下こかげ)](http://www.pixiv.net/member.php?id=11807) The distribution site "KK's WS" is currently closed.
+- Nekomimi images: Created by [Kokage Kusaka (日下こかげ) - Twitter](https://x.com/K_KOKAGE) The distribution site ["KK's WS"](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/) is currently closed.
   - For more details, please search for "Nekomimi Counter" and "Kokage Kusaka".
   - The author permits non-commercial use, modification, and redistribution.
