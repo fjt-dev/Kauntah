@@ -12,8 +12,8 @@ A hit counter running on Cloudflare Workers. Embed it with a single `<img>` tag.
 | ---------------------- | -------- | ------------------------------------------------------ |
 | `normal-150` (default) | Ver.0.91 | ![normal-150](./assets/preview/normal-150_preview.png) |
 | `blue2-150`            | Ver.0.93 | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
-| `green-100`            | Ver.0.93 | ![green-100](./assets/preview/green-100_preview.png)   |
 | `blue2-100`            | Ver.0.93 | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
+| `green-100`            | Ver.0.93 | ![green-100](./assets/preview/green-100_preview.png)   |
 
 ## Usage
 
