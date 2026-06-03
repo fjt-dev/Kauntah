@@ -9,7 +9,7 @@ class_name = "CounterDO"
 
 [[migrations]]
 tag = "v1"
-new_classes = ["CounterDO"]
+new_sqlite_classes = ["CounterDO"]
 
 [[kv_namespaces]]
 binding = "IMAGE_CACHE"
@@ -19,6 +19,6 @@ id = "05949d0dd5f84099b88fac30399203dc"
 name = "RATE_LIMITER"
 namespace_id = "1"
 
-  [ratelimits.simple]
-  limit = 30
-  period = 60
+[ratelimits.simple]
+limit = 30
+period = 60
