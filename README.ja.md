@@ -19,7 +19,7 @@ Cloudflare Workers上で動作するヒットカウンターです。`<img>`タ�
 ページに以下のタグを追加するだけです。
 
 ```html
-<img src="https://counter.fjtd.dev/counter" />
+<img src="https://counter.fjtd.dev/counter" referrerpolicy="origin" />
 ```
 
 ### パラメータ

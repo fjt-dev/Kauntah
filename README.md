@@ -19,7 +19,7 @@ A hit counter running on Cloudflare Workers. Embed it with a single `<img>` tag.
 Simply add the following tag to your page:
 
 ```html
-<img src="https://counter.fjtd.dev/counter" />
+<img src="https://counter.fjtd.dev/counter" referrerpolicy="origin" />
 ```
 
 ### Parameters
