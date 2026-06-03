@@ -15,8 +15,10 @@ new_classes = ["CounterDO"]
 binding = "IMAGE_CACHE"
 id = "05949d0dd5f84099b88fac30399203dc"
 
-[[unsafe.bindings]]
+[[ratelimits]]
 name = "RATE_LIMITER"
-type = "ratelimit"
 namespace_id = "1"
-simple = { limit = 30, period = 60 }
+
+  [ratelimits.simple]
+  limit = 30
+  period = 60
