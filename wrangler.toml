@@ -22,3 +22,7 @@ namespace_id = "1"
 [ratelimits.simple]
 limit = 30
 period = 60
+
+[observability.logs]
+enabled = true
+invocation_logs = true
