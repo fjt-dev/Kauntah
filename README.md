@@ -4,7 +4,7 @@
 
 A TypeScript-based hit counter running on Cloudflare Workers, inspired by [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah).
 
-It retains the original concept (a hit counter that works by embedding a single `<img>` tag) and the "nekomimi" (cat ear) number assets, but has been rewritten for Cloudflare's edge network. It features an atomic counter, image caching, and rate limiting.
+A hit counter running on Cloudflare Workers. Embed it with a single `<img>` tag. Features an atomic counter, image caching, and rate limiting.
 
 ## Preview
 
