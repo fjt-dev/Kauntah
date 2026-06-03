@@ -25,10 +25,10 @@ Simply add the following tag to your page:
 
 ### Parameters
 
-| Parameter | Example           | Description                                       |
-| --------- | ----------------- | ------------------------------------------------- |
-| `asset`   | `?asset=nekomimi` | `nekomimi` (default) / `blue` / `color`           |
-| `offset`  | `?offset=1000`    | Initial value added to the count (max: 1,000,000) |
+| Parameter | Example             | Description                                                      |
+| --------- | ------------------- | ---------------------------------------------------------------- |
+| `asset`   | `?asset=normal-150` | `normal-150` (default) / `blue2-150` / `green-100` / `blue2-100` |
+| `offset`  | `?offset=1000`      | Initial value added to the count (max: 1,000,000)                |
 
 ### Mechanism
 
