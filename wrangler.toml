@@ -13,7 +13,7 @@ new_classes = ["CounterDO"]
 
 [[kv_namespaces]]
 binding = "IMAGE_CACHE"
-id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+id = "05949d0dd5f84099b88fac30399203dc"
 
 [[unsafe.bindings]]
 name = "RATE_LIMITER"
