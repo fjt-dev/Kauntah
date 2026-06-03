@@ -1,0 +1,54 @@
+# ================================
+# Secrets & credentials
+# ================================
+.env
+.env.*
+!.env.example
+.dev.vars
+*.pem
+*.key
+*.p12
+*.pfx
+
+# ================================
+# Cloudflare Workers
+# ================================
+.wrangler/
+
+# ================================
+# Node.js
+# ================================
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# ================================
+# Logs
+# ================================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ================================
+# OS
+# ================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# ================================
+# Editor
+# ================================
+.vscode/
+.idea/
+.vs/
+*.swp
+*.swo
