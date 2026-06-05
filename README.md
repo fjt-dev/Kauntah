@@ -4,8 +4,6 @@
 
 A TypeScript-based hit counter running on Cloudflare Workers, inspired by [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah).
 
-A hit counter running on Cloudflare Workers. Embed it with a single `<img>` tag. Features an atomic counter, image caching, and rate limiting.
-
 ## Preview
 
 | asset                  | version  | preview                                                |
@@ -46,37 +44,6 @@ Simply add the following tag to your page:
 | Image Cache      | Workers KV                              | Generated PNG cache (24-hour TTL)                          |
 | Image Processing | pngjs                                   | PNG concatenation (no Wasm required)                       |
 | Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation (30 requests / 60 seconds per IP) |
-| DDoS Protection  | Cloudflare WAF                          | Automatic blocking at the edge                             |
-
-## Deployment
-
-A Cloudflare account with Workers and Durable Objects enabled is required.
-
-1. `npm install`
-2. `npx wrangler login`
-3. Create a KV namespace and enter the `id` into `wrangler.toml`
-4. `npm run deploy`
-
-## Directory Structure
-
-```
-kauntah/
-├── src/
-│   ├── index.ts          # Hono entry point and main logic
-│   ├── counter.ts        # Durable Object (atomic counter)
-│   ├── imageService.ts   # PNG concatenation using pngjs
-│   ├── types.ts          # Type definitions, constants, and validation functions
-│   └── assets/
-│       ├── normal-150.ts # Digit assets (base64)
-│       ├── blue2-150.ts
-│       ├── green-100.ts
-│       └── blue2-100.ts
-├── assets/
-│   └── preview/          # Preview images
-├── wrangler.toml
-├── package.json
-└── tsconfig.json
-```
 
 ## Notes
 
@@ -85,6 +52,6 @@ kauntah/
 
 ## Credits
 
-- Nekomimi images: Created by [Kokage Kusaka (日下こかげ) - Twitter](https://x.com/K_KOKAGE) The distribution site ["KK's WS"](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/) is currently closed.
+- Illustration : Created by [Kokage Kusaka (日下こかげ) - Twitter](https://x.com/K_KOKAGE) The distribution site ["KK's WS"](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/) is currently closed.
   - For more details, please search for "Nekomimi Counter" and "Kokage Kusaka".
   - The author permits non-commercial use, modification, and redistribution.
