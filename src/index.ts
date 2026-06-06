@@ -36,7 +36,7 @@ app.get("/", (c) => c.redirect("https://github.com/fjt-dev/Kauntah", 301));
  * アクセスカウンター画像を返すメインエンドポイント。
  *
  * クエリパラメータ:
- *   asset  : "nekomimi"（デフォルト）| "blue" | "color"
+ *   asset  : "normal-150"（デフォルト）| "blue2-150" | "blue2-100" | "green-100"
  *   offset : カウントに加算する値（デフォルト: 0、最大: 1,000,000）
  */
 app.get("/counter", async (c) => {

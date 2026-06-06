@@ -24,17 +24,18 @@ export function buildCounterSVG(count: number, asset: AssetType): string {
   const { width, height } = ASSET_DIMENSIONS[asset];
   const totalWidth = width * digits.length;
 
-  const defs = digits
-    .map((d, i) => {
+  const uniqueDigits = [...new Set(digits)];
+  const defs = uniqueDigits
+    .map((d) => {
       const idx = parseInt(d, 10);
       const b64 = assetB64[idx];
       if (b64 === undefined) throw new Error(`Missing asset: ${asset}/${d}.png`);
-      return `<image id="d${i}" x="0" y="0" width="${width}" height="${height}" href="data:image/png;base64,${b64}"/>`;
+      return `<image id="d${d}" x="0" y="0" width="${width}" height="${height}" href="data:image/png;base64,${b64}"/>`;
     })
     .join('');
 
   const uses = digits
-    .map((_, i) => `<use href="#d${i}" x="${i * width}" y="0"/>`)
+    .map((d, i) => `<use href="#d${d}" x="${i * width}" y="0"/>`)
     .join('');
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="${height}"><defs>${defs}</defs>${uses}</svg>`;
