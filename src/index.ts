@@ -2,7 +2,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import { Hono } from "hono";
-import { buildCounterImage } from "./imageService.ts";
+import { buildCounterSVG } from "./imageService.ts";
 import { extractOwner, parseAssetType, parseOffset, IMAGE_CACHE_TTL_SECONDS } from "./types.ts";
 import { CounterDO } from "./counter.ts";
 
@@ -14,6 +14,8 @@ export interface Env {
   IMAGE_CACHE: KVNamespace;
   /** Cloudflare Rate Limiting API */
   RATE_LIMITER: RateLimit;
+  /** D1: カウントバックアップ */
+  DB: D1Database;
 }
 
 // Durable Object クラスを再エクスポート（wrangler.toml の class_name と対応）
@@ -34,7 +36,7 @@ app.get("/", (c) => c.redirect("https://github.com/fjt-dev/Kauntah", 301));
  * アクセスカウンター画像を返すメインエンドポイント。
  *
  * クエリパラメータ:
- *   asset  : "nekomimi"（デフォルト）| "blue" | "color"
+ *   asset  : "normal-150"（デフォルト）| "blue2-150" | "blue2-100" | "green-100"
  *   offset : カウントに加算する値（デフォルト: 0、最大: 1,000,000）
  */
 app.get("/counter", async (c) => {
@@ -73,35 +75,42 @@ app.get("/counter", async (c) => {
 
   const displayCount = count + offset;
 
-  // ── 5. 画像キャッシュの探索（Workers KV）──────────────────
-  const cacheKey = `img:${asset}:${displayCount}`;
-  const cached = await env.IMAGE_CACHE.get(cacheKey, "arrayBuffer");
+  // D1にカウントをバックアップ（キャッシュHIT/MISSに関わらず常に実行）
+  c.executionCtx.waitUntil(
+    env.DB.prepare(
+      "INSERT INTO counters (owner, count) VALUES (?, ?) ON CONFLICT(owner) DO UPDATE SET count = excluded.count"
+    ).bind(owner, count).run()
+  );
+
+  // ── 5. SVGキャッシュの探索（Workers KV）──────────────────
+  const cacheKey = `svg:${asset}:${displayCount}`;
+  const cached = await env.IMAGE_CACHE.get(cacheKey, "text");
   if (cached) {
     return new Response(cached, {
       status: 200,
       headers: {
-        "Content-Type": "image/png",
+        "Content-Type": "image/svg+xml",
         "Cache-Control": "no-store",
         "X-Cache": "HIT",
       },
     });
   }
 
-  // ── 6. 動的画像生成（キャッシュミス時）────────────────────
-  const imgData = buildCounterImage(displayCount, asset);
+  // ── 6. 動的SVG生成（キャッシュミス時）────────────────────
+  const svgStr = buildCounterSVG(displayCount, asset);
 
   // KVへ非同期書き込み（レスポンスをブロックしない）
   c.executionCtx.waitUntil(
-    env.IMAGE_CACHE.put(cacheKey, imgData, {
+    env.IMAGE_CACHE.put(cacheKey, svgStr, {
       expirationTtl: IMAGE_CACHE_TTL_SECONDS,
     })
   );
 
   // ── 7. レスポンス返却 ──────────────────────────────────
-  return new Response(imgData, {
+  return new Response(svgStr, {
     status: 200,
     headers: {
-      "Content-Type": "image/png",
+      "Content-Type": "image/svg+xml",
       "Cache-Control": "no-store",
       "X-Cache": "MISS",
     },

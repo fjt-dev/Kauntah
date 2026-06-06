@@ -9,13 +9,11 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "hono": "^4.4.0",
-    "pngjs": "^7.0.0"
+    "hono": "^4.4.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240725.0",
     "@types/node": "^20.0.0",
-    "@types/pngjs": "^6.0.5",
     "typescript": "^5.0.0",
     "wrangler": "4"
   }

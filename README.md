@@ -41,8 +41,8 @@ Simply add the following tag to your page:
 | Compute          | Cloudflare Workers (Node.js compatible) | Request handling                                           |
 | Framework        | Hono                                    | Routing                                                    |
 | Counter          | Durable Objects                         | Atomic and strongly consistent increment                   |
-| Image Cache      | Workers KV                              | Generated PNG cache (24-hour TTL)                          |
-| Image Processing | pngjs                                   | PNG concatenation (no Wasm required)                       |
+| Image Cache      | Workers KV                              | Generated SVG cache (24-hour TTL)                          |
+| Image Processing | Native SVG rendering                    | Combines Base64 PNG digit assets in SVG                    |
 | Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation (30 requests / 60 seconds per IP) |
 
 ## Notes
