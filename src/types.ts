@@ -10,6 +10,13 @@ export const ASSET_TYPES: ReadonlySet<string> = new Set([
   "blue2-100",
 ]);
 
+export const ASSET_DIMENSIONS: Record<AssetType, { width: number; height: number }> = {
+  "normal-150": { width: 68, height: 150 },
+  "blue2-150":  { width: 68, height: 150 },
+  "blue2-100":  { width: 45, height: 100 },
+  "green-100":  { width: 45, height: 100 },
+};
+
 /** offsetの上限（意図しない巨大カウント防止）*/
 export const OFFSET_MAX = 1_000_000;
 

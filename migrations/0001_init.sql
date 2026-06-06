@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS counters (
+  owner TEXT PRIMARY KEY,
+  count INTEGER NOT NULL
+);
