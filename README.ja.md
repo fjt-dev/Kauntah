@@ -41,8 +41,8 @@
 | コンピューティング | Cloudflare Workers (Node.js 互換) | リクエスト処理                                              |
 | フレームワーク     | Hono                              | ルーティング                                                |
 | カウンター         | Durable Objects                   | アトミックで整合性の取れたインクリメント                    |
-| 画像キャッシュ     | Workers KV                        | 生成済み PNG のキャッシュ（TTL 24時間）                     |
-| 画像処理           | pngjs                             | PNG の連結（Wasm 不要）                                     |
+| 画像キャッシュ     | Workers KV                        | 生成済み SVG のキャッシュ（TTL 24時間）                     |
+| 画像処理           | ネイティブ SVG レンダリング      | Base64 PNG 桁画像を SVG で合成                              |
 | レート制限         | Cloudflare Rate Limiting API      | カウントの不正な水増し防止（IP あたり 30リクエスト / 60秒） |
 
 ## Notes
