@@ -26,6 +26,9 @@ export const OWNER_MAX_LENGTH = 253;
 /** KV画像キャッシュのTTL: 24時間（秒）*/
 export const IMAGE_CACHE_TTL_SECONDS = 86_400;
 
+/** ?name= パラメータの最大長・許可文字 */
+const NAME_PARAM_RE = /^[a-zA-Z0-9_\-]{1,64}$/;
+
 export function parseAssetType(value: string): AssetType {
   if (
     value === "blue2-150" ||
@@ -44,12 +47,31 @@ export function parseOffset(value: string): number {
 /**
  * Refererヘッダーからownerを抽出する。
  */
-export function extractOwner(referer: string | null): string {
+export function extractOwner(
+  referer: string | null,
+  nameParam: string | null
+): string {
+  // 1. ?name= 明示指定
+  if (nameParam !== null && NAME_PARAM_RE.test(nameParam)) {
+    return `n:${nameParam}`;
+  }
+
   if (!referer) return "unknown";
+
   try {
     const url = new URL(referer);
     const host = url.hostname;
-    if (!/^[a-zA-Z0-9][a-zA-Z0-9\-.]{0,251}[a-zA-Z0-9]$/.test(host)) return "unknown";
+
+    // 2. GitHub
+    if (host === "github.com") {
+      const username = url.pathname.split("/")[1];
+      if (username) return `github.com/${username}`;
+    }
+
+    // 3. fallback: hostname
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9\-.]{0,251}[a-zA-Z0-9]$/.test(host)) {
+      return "unknown";
+    }
     return host.slice(0, OWNER_MAX_LENGTH);
   } catch {
     return "unknown";
