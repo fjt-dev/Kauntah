@@ -31,6 +31,3 @@ period = 60
 [observability.logs]
 enabled = true
 invocation_logs = true
-
-[env.preview]
-name = "kauntah-preview"
