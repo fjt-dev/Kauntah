@@ -1,20 +1,15 @@
 // src/types.ts
 /// <reference types="@cloudflare/workers-types" />
 
-export type AssetType = "normal-150" | "blue2-150" | "green-100" | "blue2-100";
+export type AssetType = 'normal-150' | 'blue2-150' | 'green-100' | 'blue2-100';
 
-export const ASSET_TYPES: ReadonlySet<string> = new Set([
-  "normal-150",
-  "blue2-150",
-  "green-100",
-  "blue2-100",
-]);
+export const ASSET_TYPES: ReadonlySet<string> = new Set(['normal-150', 'blue2-150', 'green-100', 'blue2-100']);
 
 export const ASSET_DIMENSIONS: Record<AssetType, { width: number; height: number }> = {
-  "normal-150": { width: 68, height: 150 },
-  "blue2-150":  { width: 68, height: 150 },
-  "blue2-100":  { width: 45, height: 100 },
-  "green-100":  { width: 45, height: 100 },
+  'normal-150': { width: 68, height: 150 },
+  'blue2-150': { width: 68, height: 150 },
+  'blue2-100': { width: 45, height: 100 },
+  'green-100': { width: 45, height: 100 }
 };
 
 /** offsetの上限（意図しない巨大カウント防止）*/
@@ -26,16 +21,9 @@ export const OWNER_MAX_LENGTH = 253;
 /** KV画像キャッシュのTTL: 24時間（秒）*/
 export const IMAGE_CACHE_TTL_SECONDS = 86_400;
 
-/** ?name= パラメータの最大長・許可文字 */
-const NAME_PARAM_RE = /^[a-zA-Z0-9_\-]{1,64}$/;
-
 export function parseAssetType(value: string): AssetType {
-  if (
-    value === "blue2-150" ||
-    value === "green-100" ||
-    value === "blue2-100"
-  ) return value;
-  return "normal-150"; // デフォルト
+  if (value === 'blue2-150' || value === 'green-100' || value === 'blue2-100') return value;
+  return 'normal-150'; // デフォルト
 }
 
 export function parseOffset(value: string): number {
@@ -47,33 +35,24 @@ export function parseOffset(value: string): number {
 /**
  * Refererヘッダーからownerを抽出する。
  */
-export function extractOwner(
-  referer: string | null,
-  nameParam: string | null
-): string {
-  // 1. ?name= 明示指定
-  if (nameParam !== null && NAME_PARAM_RE.test(nameParam)) {
-    return `n:${nameParam}`;
-  }
-
-  if (!referer) return "unknown";
+export function extractOwner(referer: string | null): string {
+  if (!referer) return 'unknown';
 
   try {
     const url = new URL(referer);
     const host = url.hostname;
 
-    // 2. GitHub
-    if (host === "github.com") {
-      const username = url.pathname.split("/")[1];
+    if (host === 'github.com') {
+      const username = url.pathname.split('/')[1];
       if (username) return `github.com/${username}`;
     }
 
-    // 3. fallback: hostname
+    // fallback: hostname
     if (!/^[a-zA-Z0-9][a-zA-Z0-9\-.]{0,251}[a-zA-Z0-9]$/.test(host)) {
-      return "unknown";
+      return 'unknown';
     }
     return host.slice(0, OWNER_MAX_LENGTH);
   } catch {
-    return "unknown";
+    return 'unknown';
   }
 }

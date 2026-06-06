@@ -58,9 +58,7 @@ app.get("/counter", async (c) => {
 
   // ── 2. ownerの特定 ─────────────────────────────────────
   const referer = c.req.header("referer") ?? c.req.header("referrer") ?? null;
-  const nameParam = c.req.query("name") ?? null;
-  const owner = extractOwner(referer, nameParam);
-
+  const owner = extractOwner(referer);
   // ── 3. クエリパラメータのパース ────────────────────────────
   const asset = parseAssetType(c.req.query("asset") ?? "");
   const offset = parseOffset(c.req.query("offset") ?? "");
