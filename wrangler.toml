@@ -18,7 +18,7 @@ id = "05949d0dd5f84099b88fac30399203dc"
 [[d1_databases]]
 binding = "DB"
 database_name = "kauntah-backup"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "fc2ea8b2-ff34-4d87-b5b5-7889e86c4752"
 
 [[ratelimits]]
 name = "RATE_LIMITER"
