@@ -1,6 +1,6 @@
 # Kauntah
 
-[English](./README.md)
+[English](./README.md) | 日本語
 
 [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah) に着想を得た、Cloudflare Workers で動作する TypeScript ベースのアクセスカウンター
 
@@ -42,7 +42,7 @@
 | フレームワーク     | Hono                              | ルーティング                                                |
 | カウンター         | Durable Objects                   | アトミックで整合性の取れたインクリメント                    |
 | 画像キャッシュ     | Workers KV                        | 生成済み SVG のキャッシュ（TTL 24時間）                     |
-| 画像処理           | ネイティブ SVG レンダリング      | Base64 PNG 桁画像を SVG で合成                              |
+| 画像処理           | ネイティブ SVG レンダリング       | Base64 PNG 桁画像を SVG で合成                              |
 | レート制限         | Cloudflare Rate Limiting API      | カウントの不正な水増し防止（IP あたり 30リクエスト / 60秒） |
 
 ## Notes
@@ -52,6 +52,7 @@
 
 ## Credits
 
-- イラスト：[日下こかげ - Twitter](https://x.com/K_KOKAGE) 氏制作。配布サイト[「KK's WS」](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/)は現在閉鎖されています。
-  - 詳細は「ねこみみカウンター」「日下こかげ」で検索してください。
-  - 作者は非商用利用、改変、再配布を許可しています。
+- **イラスト**: [日下こかげ (Kokage Kusaka)](https://x.com/K_KOKAGE)氏
+  - 初出: ["KK's WS"](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/)（現在は閉鎖）
+  - 詳細については「ねこみみカウンター」および「日下こかげ」で検索してください
+  - 作者により、非営利目的での使用、改変、および再配布が許可されています

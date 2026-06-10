@@ -1,6 +1,6 @@
 # Kauntah
 
-[日本語](./README.ja.md)
+English | [日本語](./README.ja.md)
 
 A TypeScript-based hit counter running on Cloudflare Workers, inspired by [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah).
 
@@ -52,6 +52,7 @@ Simply add the following tag to your page:
 
 ## Credits
 
-- Illustration : Created by [Kokage Kusaka (日下こかげ) - Twitter](https://x.com/K_KOKAGE) The distribution site ["KK's WS"](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/) is currently closed.
-  - For more details, please search for "Nekomimi Counter" and "Kokage Kusaka".
-  - The author permits non-commercial use, modification, and redistribution.
+- **Illustration**: [Kokage Kusaka (日下こかげ)](https://x.com/K_KOKAGE)
+  - Originally distributed on ["KK's WS"](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/) (now closed)
+  - For more details, search for "Nekomimi Counter" and "Kokage Kusaka"
+  - Non-commercial use, modification, and redistribution are permitted by the author
