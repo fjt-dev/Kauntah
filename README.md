@@ -1,5 +1,8 @@
 # Kauntah
 
+[![CI](https://github.com/fjt-dev/Kauntah/actions/workflows/ci.yml/badge.svg)](https://github.com/fjt-dev/Kauntah/actions/workflows/ci.yml)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey.svg)](./LICENSE)
+
 English | [日本語](./README.ja.md)
 
 A TypeScript-based hit counter for Cloudflare Workers or a self-hosted Docker server, inspired by [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah).
@@ -86,6 +89,14 @@ The Docker edition uses SQLite for atomic persistent counters and an in-memory S
 
 - Rate limiting: Up to 30 requests per 60 seconds from the same IP. Returns `429 Too Many Requests` if exceeded.
 - The original asset images are included in the repository for reference, but are not used directly at runtime. They are embedded as Base64-encoded strings in `src/assets/`.
+
+## Contributing
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for development and pull request instructions.
+
+## License
+
+Kauntah is distributed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](./LICENSE). The included counter artwork is non-commercial material by Kokage Kusaka; see the license file for details.
 
 ## Credits
 

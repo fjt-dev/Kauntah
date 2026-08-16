@@ -1,5 +1,8 @@
 # Kauntah
 
+[![CI](https://github.com/fjt-dev/Kauntah/actions/workflows/ci.yml/badge.svg)](https://github.com/fjt-dev/Kauntah/actions/workflows/ci.yml)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/license-CC%20BY--NC--SA%204.0-lightgrey.svg)](./LICENSE)
+
 [English](./README.md) | 日本語
 
 [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah) に着想を得た、Cloudflare Workers またはセルフホストの Docker サーバーで動作する TypeScript ベースのアクセスカウンター
@@ -86,6 +89,14 @@ Docker版では各 Cloudflare サービスの代わりに、アトミックで�
 
 - レート制限：同一 IP から 60 秒間に最大 30 リクエストまで。上限を超えた場合は `429 Too Many Requests` を返します。
 - 元の画像ファイルはリポジトリに含まれていますが、実行時には直接使用されません。`src/assets/` 以下に Base64 エンコードされた文字列として埋め込まれています。
+
+## コントリビューション
+
+開発環境とプルリクエストの手順は [CONTRIBUTING.md](./CONTRIBUTING.md) を参照してください。
+
+## ライセンス
+
+Kauntah は [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](./LICENSE) の下で配布されます。同梱のカウンター画像は日下こかげ氏による非営利用素材です。詳細はライセンスファイルを参照してください。
 
 ## Credits
 
