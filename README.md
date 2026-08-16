@@ -2,7 +2,7 @@
 
 English | [日本語](./README.ja.md)
 
-A TypeScript-based hit counter running on Cloudflare Workers, inspired by [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah).
+A TypeScript-based hit counter for Cloudflare Workers or a self-hosted Docker server, inspired by [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah).
 
 ## Preview
 
@@ -34,16 +34,53 @@ Simply add the following tag to your page:
 - Creates an independent counter for each host.
 - Available for use by anyone with a site that has its own FQDN.
 
+## Self-host with Docker
+
+Requirements: Docker Engine with Docker Compose.
+
+```sh
+cp .env.example .env
+docker compose up -d --build
+```
+
+The counter is now available at `http://localhost:3000/counter`. Test it with a Referer header so the request uses its own site counter:
+
+```sh
+curl -i -H 'Referer: https://example.com/' http://localhost:3000/counter
+```
+
+Use it from a page by changing the host name to your server:
+
+```html
+<img src="https://counter.example.com/counter" referrerpolicy="origin" />
+```
+
+Counts are stored in SQLite in the `kauntah-data` Docker volume and survive container recreation. `docker compose down` keeps this volume; `docker compose down -v` permanently deletes it.
+
+Configuration is documented in `.env.example`. When Kauntah is behind a trusted reverse proxy, set `TRUST_PROXY=true` so rate limiting uses the visitor IP forwarded in `X-Forwarded-For` or `X-Real-IP`. Do not enable it when clients can connect to Kauntah directly, because those headers can then be spoofed.
+
+Useful commands:
+
+```sh
+docker compose logs -f kauntah
+docker compose restart kauntah
+docker compose down
+```
+
+The self-hosted server exposes `GET /healthz` for health checks. It is designed to run as one application replica with its local SQLite volume.
+
 ## Tech Stack
 
 | Layer            | Technology                              | Role                                                       |
 | ---------------- | --------------------------------------- | ---------------------------------------------------------- |
-| Compute          | Cloudflare Workers (Node.js compatible) | Request handling                                           |
+| Compute          | Cloudflare Workers or Node.js 24        | Request handling                                           |
 | Framework        | Hono                                    | Routing                                                    |
 | Counter          | Durable Objects                         | Atomic and strongly consistent increment                   |
 | Image Cache      | Workers KV                              | Generated SVG cache (24-hour TTL)                          |
 | Image Processing | Native SVG rendering                    | Combines Base64 PNG digit assets in SVG                    |
 | Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation (30 requests / 60 seconds per IP) |
+
+The Docker edition uses SQLite for atomic persistent counters and an in-memory SVG cache and rate limiter instead of the corresponding Cloudflare services.
 
 ## Notes
 

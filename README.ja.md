@@ -2,7 +2,7 @@
 
 [English](./README.md) | 日本語
 
-[shimobayashi/kauntah](https://github.com/shimobayashi/kauntah) に着想を得た、Cloudflare Workers で動作する TypeScript ベースのアクセスカウンター
+[shimobayashi/kauntah](https://github.com/shimobayashi/kauntah) に着想を得た、Cloudflare Workers またはセルフホストの Docker サーバーで動作する TypeScript ベースのアクセスカウンター
 
 ## Preview
 
@@ -34,16 +34,53 @@
 - ホストごとに独立したカウンターを作成します。
 - 独自の FQDN を持つサイトであれば、誰でも利用可能です。
 
+## Dockerでセルフホスト
+
+Docker Engine と Docker Compose が必要です。
+
+```sh
+cp .env.example .env
+docker compose up -d --build
+```
+
+`http://localhost:3000/counter` でカウンターを利用できます。サイト別のカウンターとして動作するよう、Referer ヘッダーを付けて確認します。
+
+```sh
+curl -i -H 'Referer: https://example.com/' http://localhost:3000/counter
+```
+
+実際のページでは、ホスト名を自分のサーバーに変更して使用します。
+
+```html
+<img src="https://counter.example.com/counter" referrerpolicy="origin" />
+```
+
+カウントは Docker の `kauntah-data` ボリューム内の SQLite に保存され、コンテナを作り直しても維持されます。`docker compose down` ではボリュームを保持しますが、`docker compose down -v` を実行すると完全に削除されるので注意してください。
+
+設定項目は `.env.example` に記載しています。信頼できるリバースプロキシの背後で動かす場合は `TRUST_PROXY=true` にすると、`X-Forwarded-For` または `X-Real-IP` の訪問者IPをレート制限に使います。クライアントが Kauntah に直接接続できる構成では、ヘッダーを偽装できるため有効にしないでください。
+
+よく使う操作:
+
+```sh
+docker compose logs -f kauntah
+docker compose restart kauntah
+docker compose down
+```
+
+セルフホスト版はヘルスチェック用に `GET /healthz` を公開します。ローカル SQLite ボリュームを使う単一アプリケーションレプリカ向けの構成です。
+
 ## Tech Stack
 
 | Layer              | Technology                        | Role                                                        |
 | ------------------ | --------------------------------- | ----------------------------------------------------------- |
-| コンピューティング | Cloudflare Workers (Node.js 互換) | リクエスト処理                                              |
+| コンピューティング | Cloudflare Workers または Node.js 24 | リクエスト処理                                           |
 | フレームワーク     | Hono                              | ルーティング                                                |
 | カウンター         | Durable Objects                   | アトミックで整合性の取れたインクリメント                    |
 | 画像キャッシュ     | Workers KV                        | 生成済み SVG のキャッシュ（TTL 24時間）                     |
 | 画像処理           | ネイティブ SVG レンダリング       | Base64 PNG 桁画像を SVG で合成                              |
 | レート制限         | Cloudflare Rate Limiting API      | カウントの不正な水増し防止（IP あたり 30リクエスト / 60秒） |
+
+Docker版では各 Cloudflare サービスの代わりに、アトミックで永続的なカウンターには SQLite、SVGキャッシュとレート制限にはメモリを使用します。
 
 ## Notes
 

@@ -1,0 +1,11 @@
+.git
+.github
+.DS_Store
+.env
+data
+node_modules
+npm-debug.log*
+Dockerfile*
+compose*.yml
+README*.md
+

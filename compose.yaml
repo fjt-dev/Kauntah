@@ -1,0 +1,30 @@
+services:
+  kauntah:
+    build:
+      context: .
+    image: kauntah:local
+    restart: unless-stopped
+    init: true
+    read_only: true
+    ports:
+      - "${KAUNTAH_PORT:-3000}:3000"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATA_DIR: /data
+      RATE_LIMIT_MAX: "${RATE_LIMIT_MAX:-30}"
+      RATE_LIMIT_WINDOW_SECONDS: "${RATE_LIMIT_WINDOW_SECONDS:-60}"
+      IMAGE_CACHE_MAX_ENTRIES: "${IMAGE_CACHE_MAX_ENTRIES:-10000}"
+      IMAGE_CACHE_TTL_SECONDS: "${IMAGE_CACHE_TTL_SECONDS:-86400}"
+      TRUST_PROXY: "${TRUST_PROXY:-false}"
+    volumes:
+      - kauntah-data:/data
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+
+volumes:
+  kauntah-data:
