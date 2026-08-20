@@ -4,6 +4,9 @@ English | [日本語](./README.ja.md)
 
 A TypeScript-based hit counter running on Cloudflare Workers, inspired by [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah).
 
+> [!TIP]
+> Use the [Kauntah Generator](https://kauntah-generate.fjtd.moe/) to preview themes and generate HTML or Markdown embed code.
+
 ## Preview
 
 | asset                  | version  | preview                                                |

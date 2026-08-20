@@ -4,6 +4,9 @@
 
 [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah) に着想を得た、Cloudflare Workers で動作する TypeScript ベースのアクセスカウンター
 
+> [!TIP]
+> [Kauntahジェネレータ](https://kauntah-generate.fjtd.moe/ja/)では、テーマのプレビューやHTML・Markdown用コードの生成ができます。
+
 ## Preview
 
 | asset                   | version  | preview                                                |
