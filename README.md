@@ -48,7 +48,7 @@ Simply add the following tag to your page:
 ## Notes
 
 - Rate limiting: Up to 30 requests per 60 seconds from the same IP. Returns `429 Too Many Requests` if exceeded.
-- Each successful counter request performs one persistent write to its owner's SQLite-backed Durable Object. There is no D1 database or backup synchronization path to operate.
+- Each successful counter request performs one persistent write to its owner's SQLite-backed Durable Object.
 - Before deploying, run `npm run check` to type-check the Worker and verify that Wrangler can build its deployment bundle.
 - The original asset images are included in the repository for reference, but are not used directly at runtime. They are embedded as Base64-encoded strings in `src/assets/`.
 
