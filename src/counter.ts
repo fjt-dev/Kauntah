@@ -23,8 +23,8 @@ export class CounterDO implements DurableObject {
       this.count = (await this.ctx.storage.get<number>("count")) ?? 0;
     }
     this.count += 1;
-    // 非同期書き込み（レスポンスをブロックしない）
-    this.ctx.storage.put("count", this.count);
+    // SQLite-backed DO storageを唯一の永続ストアとして使用する。
+    await this.ctx.storage.put("count", this.count);
     return this.count;
   }
 

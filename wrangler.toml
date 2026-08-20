@@ -7,18 +7,13 @@ compatibility_flags = ["nodejs_compat"]
 name = "COUNTER"
 class_name = "CounterDO"
 
-[[migrations]]
-tag = "v1"
-new_sqlite_classes = ["CounterDO"]
+[exports.CounterDO]
+type = "durable-object"
+storage = "sqlite"
 
 [[kv_namespaces]]
 binding = "IMAGE_CACHE"
 id = "05949d0dd5f84099b88fac30399203dc"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "kauntah-backup"
-database_id = "fc2ea8b2-ff34-4d87-b5b5-7889e86c4752"
 
 [[ratelimits]]
 name = "RATE_LIMITER"
