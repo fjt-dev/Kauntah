@@ -14,8 +14,6 @@ export interface Env {
   IMAGE_CACHE: KVNamespace;
   /** Cloudflare Rate Limiting API */
   RATE_LIMITER: RateLimit;
-  /** D1: カウントバックアップ */
-  DB: D1Database;
 }
 
 // Durable Object クラスを再エクスポート（wrangler.toml の class_name と対応）
@@ -74,13 +72,6 @@ app.get("/counter", async (c) => {
   const count = parseInt(rawCount, 10);
 
   const displayCount = count + offset;
-
-  // D1にカウントをバックアップ（キャッシュHIT/MISSに関わらず常に実行）
-  c.executionCtx.waitUntil(
-    env.DB.prepare(
-      "INSERT INTO counters (owner, count) VALUES (?, ?) ON CONFLICT(owner) DO UPDATE SET count = excluded.count"
-    ).bind(owner, count).run()
-  );
 
   // ── 5. SVGキャッシュの探索（Workers KV）──────────────────
   const cacheKey = `svg:${asset}:${displayCount}`;

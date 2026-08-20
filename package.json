@@ -3,18 +3,23 @@
   "version": "2.0.0",
   "description": "World easiest access counter — Cloudflare Workers edition",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && wrangler deploy --dry-run",
+    "security:audit": "npm audit && npm audit signatures"
   },
   "dependencies": {
-    "hono": "^4.4.0"
+    "hono": "^4.13.3"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240725.0",
-    "@types/node": "^20.0.0",
+    "@cloudflare/workers-types": "^5.20260815.1",
     "typescript": "^5.0.0",
-    "wrangler": "4"
+    "wrangler": "^4.124.0"
   }
 }
