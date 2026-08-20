@@ -22,10 +22,11 @@ export class CounterDO implements DurableObject {
       // 初回または再起動後: ストレージから復元
       this.count = (await this.ctx.storage.get<number>("count")) ?? 0;
     }
-    this.count += 1;
+    const nextCount = this.count + 1;
     // SQLite-backed DO storageを唯一の永続ストアとして使用する。
-    await this.ctx.storage.put("count", this.count);
-    return this.count;
+    await this.ctx.storage.put("count", nextCount);
+    this.count = nextCount;
+    return nextCount;
   }
 
   async fetch(_request: Request): Promise<Response> {
