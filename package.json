@@ -3,6 +3,9 @@
   "version": "2.0.0",
   "description": "World easiest access counter — Cloudflare Workers edition",
   "private": true,
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
