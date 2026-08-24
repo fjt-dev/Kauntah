@@ -40,34 +40,34 @@ app.get("/", (c) => c.redirect("https://github.com/fjt-dev/Kauntah", 301));
 app.get("/counter", async (c) => {
   const env = c.env;
 
-  // ── 1. レート制限（カウンター水増し防止） ──────────────────
+  // ── 1. ownerの特定 ─────────────────────────────────────
+  const referer = c.req.header("referer") ?? c.req.header("referrer") ?? null;
+  const owner = extractOwner(referer);
+
+  // ── 2. クエリパラメータのパース ────────────────────────────
+  const asset = parseAssetType(c.req.query("asset") ?? "");
+  const offset = parseOffset(c.req.query("offset") ?? "");
+
+  // ── 3. レート制限（カウンター水増し防止） ──────────────────
   // Cloudflare Rate Limiting API を使用。
   // DDoS・大量リクエストはCloudflare WAFがエッジで遮断するため、
-  // ここでは「同一IPによるカウンター水増し」のみを対象とする。
+  // ここでは「同一ownerに対する同一IPからのカウンター水増し」のみを対象とする。
   const ip =
     c.req.header("cf-connecting-ip") ??
     c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ??
     "unknown";
 
-  const { success } = await env.RATE_LIMITER.limit({ key: ip });
-  if (!success) {
-    return c.text("Too Many Requests", 429);
-  }
+  const rateLimitKey = JSON.stringify([owner, ip]);
+  const { success: shouldIncrement } = await env.RATE_LIMITER.limit({ key: rateLimitKey });
 
-  // ── 2. ownerの特定 ─────────────────────────────────────
-  const referer = c.req.header("referer") ?? c.req.header("referrer") ?? null;
-  const owner = extractOwner(referer);
-
-  // ── 3. クエリパラメータのパース ────────────────────────────
-  const asset = parseAssetType(c.req.query("asset") ?? "");
-  const offset = parseOffset(c.req.query("offset") ?? "");
-
-  // ── 4. カウントのインクリメント（Durable Object）─────────────
+  // ── 4. カウントの取得（Durable Object）────────────────────
   // ownerごとに固定のDOインスタンスにルーティングする。
   // idFromName は同じ文字列に対して常に同じIDを返す。
+  // レート制限超過時はインクリメントせず現在値のみを取得する。
   const doId = env.COUNTER.idFromName(owner);
   const stub = env.COUNTER.get(doId);
-  const res = await stub.fetch(new Request("https://do/"));
+  const operation = shouldIncrement ? "increment" : "current";
+  const res = await stub.fetch(new Request(`https://do/${operation}`));
   const rawCount = await res.text();
   const count = parseInt(rawCount, 10);
 
@@ -83,6 +83,7 @@ app.get("/counter", async (c) => {
         "Content-Type": "image/svg+xml",
         "Cache-Control": "no-store",
         "X-Cache": "HIT",
+        "X-Count-Incremented": String(shouldIncrement),
       },
     });
   }
@@ -104,6 +105,7 @@ app.get("/counter", async (c) => {
       "Content-Type": "image/svg+xml",
       "Cache-Control": "no-store",
       "X-Cache": "MISS",
+      "X-Count-Incremented": String(shouldIncrement),
     },
   });
 });

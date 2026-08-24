@@ -20,7 +20,7 @@ name = "RATE_LIMITER"
 namespace_id = "1"
 
 [ratelimits.simple]
-limit = 30
+limit = 20
 period = 60
 
 [observability.logs]

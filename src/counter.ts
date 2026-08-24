@@ -14,23 +14,34 @@ export class CounterDO implements DurableObject {
   }
 
   /**
-   * カウントを+1して新しい値を返す。
-   * DO内はシングルスレッドで動作するため競合は発生しない。
+   * 永続ストレージから現在のカウントを読み込む。
    */
-  async increment(): Promise<number> {
+  async getCount(): Promise<number> {
     if (this.count === null) {
       // 初回または再起動後: ストレージから復元
       this.count = (await this.ctx.storage.get<number>("count")) ?? 0;
     }
-    const nextCount = this.count + 1;
+    return this.count;
+  }
+
+  /**
+   * カウントを+1して新しい値を返す。
+   * DO内はシングルスレッドで動作するため競合は発生しない。
+   */
+  async increment(): Promise<number> {
+    const currentCount = await this.getCount();
+    const nextCount = currentCount + 1;
     // SQLite-backed DO storageを唯一の永続ストアとして使用する。
     await this.ctx.storage.put("count", nextCount);
     this.count = nextCount;
     return nextCount;
   }
 
-  async fetch(_request: Request): Promise<Response> {
-    const count = await this.increment();
+  async fetch(request: Request): Promise<Response> {
+    const { pathname } = new URL(request.url);
+    const count = pathname === "/current"
+      ? await this.getCount()
+      : await this.increment();
     return new Response(String(count), { status: 200 });
   }
 }

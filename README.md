@@ -2,19 +2,7 @@
 
 English | [日本語](./README.ja.md)
 
-A TypeScript-based hit counter running on Cloudflare Workers, inspired by [shimobayashi/kauntah](https://github.com/shimobayashi/kauntah).
-
-> [!TIP]
-> Use the [Kauntah Generator](https://kauntah-generate.fjtd.moe/) to preview themes and generate HTML or Markdown embed code.
-
-## Preview
-
-| asset                  | version  | preview                                                |
-| ---------------------- | -------- | ------------------------------------------------------ |
-| `normal-150` (default) | Ver.0.91 | ![normal-150](./assets/preview/normal-150_preview.png) |
-| `blue2-150`            | Ver.0.93 | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
-| `blue2-100`            | Ver.0.93 | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
-| `green-100`            | Ver.0.93 | ![green-100](./assets/preview/green-100_preview.png)   |
+A TypeScript-based hit counter running on Cloudflare Workers.
 
 ## Usage
 
@@ -23,6 +11,19 @@ Simply add the following tag to your page:
 ```html
 <img src="https://counter.fjtd.dev/counter" referrerpolicy="origin" />
 ```
+
+### Generator (Preview)
+
+https://kauntah-generate.fjtd.moe/
+
+## theme
+
+| asset                  | version  | preview                                                |
+| ---------------------- | -------- | ------------------------------------------------------ |
+| `normal-150` (default) | Ver.0.91 | ![normal-150](./assets/preview/normal-150_preview.png) |
+| `blue2-150`            | Ver.0.93 | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
+| `blue2-100`            | Ver.0.93 | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
+| `green-100`            | Ver.0.93 | ![green-100](./assets/preview/green-100_preview.png)   |
 
 ### Parameters
 
@@ -39,18 +40,18 @@ Simply add the following tag to your page:
 
 ## Tech Stack
 
-| Layer            | Technology                              | Role                                                       |
-| ---------------- | --------------------------------------- | ---------------------------------------------------------- |
-| Compute          | Cloudflare Workers (Node.js compatible) | Request handling                                           |
-| Framework        | Hono                                    | Routing                                                    |
-| Counter          | SQLite-backed Durable Objects           | Atomic increment and the sole persistent count store       |
-| Image Cache      | Workers KV                              | Generated SVG cache (24-hour TTL)                          |
-| Image Processing | Native SVG rendering                    | Combines Base64 PNG digit assets in SVG                    |
-| Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation (30 requests / 60 seconds per IP) |
+| Layer            | Technology                              | Role                                                                 |
+| ---------------- | --------------------------------------- | -------------------------------------------------------------------- |
+| Compute          | Cloudflare Workers (Node.js compatible) | Request handling                                                     |
+| Framework        | Hono                                    | Routing                                                              |
+| Counter          | SQLite-backed Durable Objects           | Atomic increment and the sole persistent count store                 |
+| Image Cache      | Workers KV                              | Generated SVG cache (24-hour TTL)                                    |
+| Image Processing | Native SVG rendering                    | Combines Base64 PNG digit assets in SVG                              |
+| Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation (20 requests / 60 seconds per owner and IP) |
 
 ## Notes
 
-- Rate limiting: Up to 30 requests per 60 seconds from the same IP. Returns `429 Too Many Requests` if exceeded.
+- Rate limiting: The count increases up to 20 times per 60 seconds for each owner and IP combination. Requests above the limit return the current counter image without increasing the count.
 - Each successful counter request performs one persistent write to its owner's SQLite-backed Durable Object.
 - Before deploying, run `npm run check` to type-check the Worker and verify that Wrangler can build its deployment bundle.
 - The original asset images are included in the repository for reference, but are not used directly at runtime. They are embedded as Base64-encoded strings in `src/assets/`.
