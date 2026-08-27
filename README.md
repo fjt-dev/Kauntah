@@ -31,6 +31,7 @@ https://kauntah-generate.fjtd.moe/
 | --------- | ------------------- | ---------------------------------------------------------------- |
 | `asset`   | `?asset=normal-150` | `normal-150` (default) / `blue2-150` / `green-100` / `blue2-100` |
 | `offset`  | `?offset=1000`      | Initial value added to the count (max: 1,000,000)                |
+| `padding` | `?padding=4`        | Minimum display digits (1–16); pads with leading zeros           |
 
 ### Mechanism
 
