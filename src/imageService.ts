@@ -17,9 +17,10 @@ const ASSETS: Record<AssetType, string[]> = {
 
 /**
  * 数値とアセット種別を受け取り、各桁をSVGのuseタグで横並びに配置したSVG文字列を返す。
+ * paddingが指定された場合は、表示時のみ左側を0で埋める。
  */
-export function buildCounterSVG(count: number, asset: AssetType): string {
-  const digits = String(count).split('');
+export function buildCounterSVG(count: number, asset: AssetType, padding = 0): string {
+  const digits = String(count).padStart(padding, '0').split('');
   const assetB64 = ASSETS[asset];
   const { width, height } = ASSET_DIMENSIONS[asset];
   const totalWidth = width * digits.length;

@@ -3,7 +3,13 @@
 
 import { Hono } from "hono";
 import { buildCounterSVG } from "./imageService.ts";
-import { extractOwner, parseAssetType, parseOffset, IMAGE_CACHE_TTL_SECONDS } from "./types.ts";
+import {
+  extractOwner,
+  parseAssetType,
+  parseOffset,
+  parsePadding,
+  IMAGE_CACHE_TTL_SECONDS,
+} from "./types.ts";
 import { CounterDO } from "./counter.ts";
 
 // Cloudflare Workers の環境バインディング型
@@ -36,6 +42,7 @@ app.get("/", (c) => c.redirect("https://github.com/fjt-dev/Kauntah", 301));
  * クエリパラメータ:
  *   asset  : "normal-150"（デフォルト）| "blue2-150" | "blue2-100" | "green-100"
  *   offset : カウントに加算する値（デフォルト: 0、最大: 1,000,000）
+ *   padding: 最小表示桁数（デフォルト: 指定なし、範囲: 1〜16）
  */
 app.get("/counter", async (c) => {
   const env = c.env;
@@ -47,6 +54,7 @@ app.get("/counter", async (c) => {
   // ── 2. クエリパラメータのパース ────────────────────────────
   const asset = parseAssetType(c.req.query("asset") ?? "");
   const offset = parseOffset(c.req.query("offset") ?? "");
+  const padding = parsePadding(c.req.query("padding") ?? "");
 
   // ── 3. レート制限（カウンター水増し防止） ──────────────────
   // Cloudflare Rate Limiting API を使用。
@@ -74,7 +82,9 @@ app.get("/counter", async (c) => {
   const displayCount = count + offset;
 
   // ── 5. SVGキャッシュの探索（Workers KV）──────────────────
-  const cacheKey = `svg:${asset}:${displayCount}`;
+  const cacheKey = padding === 0
+    ? `svg:${asset}:${displayCount}`
+    : `svg:${asset}:${displayCount}:padding:${padding}`;
   const cached = await env.IMAGE_CACHE.get(cacheKey, "text");
   if (cached) {
     return new Response(cached, {
@@ -89,7 +99,7 @@ app.get("/counter", async (c) => {
   }
 
   // ── 6. 動的SVG生成（キャッシュミス時）────────────────────
-  const svgStr = buildCounterSVG(displayCount, asset);
+  const svgStr = buildCounterSVG(displayCount, asset, padding);
 
   // KVへ非同期書き込み（レスポンスをブロックしない）
   c.executionCtx.waitUntil(

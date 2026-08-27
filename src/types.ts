@@ -20,6 +20,10 @@ export const ASSET_DIMENSIONS: Record<AssetType, { width: number; height: number
 /** offsetの上限（意図しない巨大カウント防止）*/
 export const OFFSET_MAX = 1_000_000;
 
+/** paddingの許可範囲 */
+export const PADDING_MIN = 1;
+export const PADDING_MAX = 16;
+
 /** ownerの最大長（DB肥大化・DoS防止）*/
 export const OWNER_MAX_LENGTH = 253;
 
@@ -39,6 +43,13 @@ export function parseOffset(value: string): number {
   const n = parseInt(value, 10);
   if (!Number.isFinite(n) || n < 0) return 0;
   return Math.min(n, OFFSET_MAX);
+}
+
+export function parsePadding(value: string): number {
+  if (!/^\d+$/.test(value)) return 0;
+  const n = Number(value);
+  if (!Number.isSafeInteger(n) || n < PADDING_MIN || n > PADDING_MAX) return 0;
+  return n;
 }
 
 /**
