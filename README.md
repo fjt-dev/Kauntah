@@ -59,6 +59,8 @@ Enable animation (`animation=none` or omission keeps the static version):
 
 ## Notes
 
+- Development and tests require Node.js 22.6.0 or later (`npm test` uses `--experimental-strip-types`).
+
 - Rate limiting: The count increases up to 20 times per 60 seconds for each owner and IP combination. Requests above the limit return the current counter image without increasing the count.
 - Each successful counter request performs one persistent write to its owner's SQLite-backed Durable Object.
 - Before deploying, run `npm run check` to type-check the Worker and verify that Wrangler can build its deployment bundle.
