@@ -6,10 +6,10 @@ import { parseAnimation, ASSET_TYPES } from '../src/types.ts';
 
 test('animation is opt-in and limited to blue2-100', () => {
   for (const asset of ASSET_TYPES) {
-    for (const value of ['', 'none', 'true', '1', 'RULE34', '<script>']) {
+    for (const value of ['', '0', 'none', 'true', 'rule34', '01', '1.0', ' 1', 'RULE34', '<script>']) {
       assert.equal(parseAnimation(value, asset), 'none');
     }
-    assert.equal(parseAnimation('rule34', asset), asset === 'blue2-100' ? 'rule34' : 'none');
+    assert.equal(parseAnimation('1', asset), asset === 'blue2-100' ? 'rule34' : 'none');
     if (asset !== 'blue2-100') {
       assert.equal(buildCounterSVG(123, asset, 4, 'rule34'), buildCounterSVG(123, asset, 4));
     }

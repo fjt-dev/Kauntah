@@ -5,9 +5,9 @@ export type AssetType = "normal-150" | "blue2-150" | "green-100" | "blue2-100";
 
 export type AnimationType = "none" | "rule34";
 
-/** rule34 は blue2-100 専用。省略・不正値・他のアセットは静止画にする。 */
+/** rule34 は blue2-100 専用。1のみ有効。0・省略・不正値・他のアセットは静止画にする。 */
 export function parseAnimation(value: string, asset: AssetType): AnimationType {
-  return asset === "blue2-100" && value === "rule34" ? "rule34" : "none";
+  return asset === "blue2-100" && value === "1" ? "rule34" : "none";
 }
 
 export const ASSET_TYPES: ReadonlySet<string> = new Set([

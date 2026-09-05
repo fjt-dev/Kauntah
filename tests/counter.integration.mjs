@@ -19,10 +19,11 @@ async function get(asset, animation, expectedCache, format) {
   return svg;
 }
 const staticSvg = await get('blue2-100', undefined, 'MISS', 'png');
-const animatedSvg = await get('blue2-100', 'rule34', 'MISS', 'gif');
-assert.equal(await get('blue2-100', 'rule34', 'HIT', 'gif'), animatedSvg);
-assert.equal(await get('blue2-100', 'none', 'HIT', 'png'), staticSvg);
+const animatedSvg = await get('blue2-100', '1', 'MISS', 'gif');
+assert.equal(await get('blue2-100', '1', 'HIT', 'gif'), animatedSvg);
+assert.equal(await get('blue2-100', '0', 'HIT', 'png'), staticSvg);
 assert.equal(await get('blue2-100', 'invalid', 'HIT', 'png'), staticSvg);
-const greenSvg = await get('green-100', 'rule34', 'MISS', 'png');
+assert.equal(await get('blue2-100', 'rule34', 'HIT', 'png'), staticSvg);
+const greenSvg = await get('green-100', '1', 'MISS', 'png');
 assert.equal(await get('green-100', undefined, 'HIT', 'png'), greenSvg);
 console.log('PASS: real Worker responses, offsets, padding, mode-specific cache MISS/HIT and fallback');

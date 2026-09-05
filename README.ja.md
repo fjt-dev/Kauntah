@@ -32,12 +32,12 @@ https://kauntah-generate.fjtd.moe/ja/
 | `asset`   | `?asset=normal-150` | `normal-150`（デフォルト）/ `blue2-150` / `green-100` / `blue2-100` |
 | `offset`  | `?offset=1000`      | カウントに加算される初期値（最大：1,000,000）                       |
 | `padding` | `?padding=4`        | 最小表示桁数（1〜16）。指定桁数まで左側を0で埋めます                |
-| `animation` | `?asset=blue2-100&animation=rule34` | `blue2-100`専用。`rule34`でGIFアニメーション、`none`（デフォルト）で静止画。他のテーマ・不正値では無効。 |
+| `animation` | `?asset=blue2-100&animation=1` | `blue2-100`専用。`1`でGIFアニメーション、`0`または省略で静止画。他のテーマ・不正値では無効。 |
 
-アニメーションを有効にする例（`animation=none`または省略で静止画）：
+アニメーションを有効にする例（`animation=0`または省略で静止画）：
 
 ```html
-<img src="https://counter.fjtd.dev/counter?asset=blue2-100&amp;animation=rule34&amp;padding=4" referrerpolicy="origin" />
+<img src="https://counter.fjtd.dev/counter?asset=blue2-100&amp;animation=1&amp;padding=4" referrerpolicy="origin" />
 ```
 
 ### Mechanism

@@ -42,7 +42,7 @@ app.get("/", (c) => c.redirect("https://github.com/fjt-dev/Kauntah", 301));
  *
  * クエリパラメータ:
  *   asset  : "normal-150"（デフォルト）| "blue2-150" | "blue2-100" | "green-100"
- *   animation: "none"（デフォルト）| "rule34"（blue2-100のみ）
+ *   animation: "0"または省略で無効 | "1"で有効（blue2-100のみ）
  *   offset : カウントに加算する値（デフォルト: 0、最大: 1,000,000）
  *   padding: 最小表示桁数（デフォルト: 指定なし、範囲: 1〜16）
  */
