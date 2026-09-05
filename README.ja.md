@@ -32,6 +32,7 @@ https://kauntah-generate.fjtd.moe/ja/
 | `asset`   | `?asset=normal-150` | `normal-150`（デフォルト）/ `blue2-150` / `green-100` / `blue2-100` |
 | `offset`  | `?offset=1000`      | カウントに加算される初期値（最大：1,000,000）                       |
 | `padding` | `?padding=4`        | 最小表示桁数（1〜16）。指定桁数まで左側を0で埋めます                |
+| `animation` | `?animation=1` | `blue2-100`専用。`1`でGIFアニメーション、`0`または省略で静止画。他のテーマ・不正値では無効。 |
 
 ### Mechanism
 
@@ -47,15 +48,22 @@ https://kauntah-generate.fjtd.moe/ja/
 | フレームワーク     | Hono                              | ルーティング                                                       |
 | カウンター         | SQLite-backed Durable Objects     | アトミックなインクリメントと唯一の永続カウントストア               |
 | 画像キャッシュ     | Workers KV                        | 生成済み SVG のキャッシュ（TTL 24時間）                            |
-| 画像処理           | ネイティブ SVG レンダリング       | Base64 PNG 桁画像を SVG で合成                                     |
+| 画像処理           | ネイティブ SVG レンダリング       | Base64 PNG / GIF 桁画像を SVG で合成                                     |
 | レート制限         | Cloudflare Rate Limiting API      | カウントの不正な水増し防止（owner・IP あたり 20リクエスト / 60秒） |
 
 ## Notes
+
+- 開発・テストにはNode.js 22.6.0以降が必要です（テストで`--experimental-strip-types`を使用）。
 
 - レート制限：所有者とIPアドレスの組み合わせごとに、カウントは60秒間に最大20回まで増加します。制限を超えたリクエストに対しては、カウントを増やさず現在のカウンター画像が返されます。
 - カウンターへのリクエストが成功するたびに、所有者のSQLiteベースのDurable Objectに対して1回の永続的な書き込みが行われます。
 - デプロイする前に、`npm run check`を実行してWorkerの型チェックを行い、Wranglerがデプロイ用のバンドルをビルドできることを確認してください。
 - 元の画像アセットは参照用にリポジトリに含まれていますが、実行時には直接使用されません。これらはBase64エンコードされた文字列として`src/assets/`に埋め込まれています。
+
+### アニメーションの検証
+
+- `npm test`: パラメーター、全10桁のGIF、ゼロ埋め、既存テーマを検証します。
+- `npm run dev -- --local`を起動後、別のターミナルで`npm run test:integration`: レスポンスと静止画・動画のキャッシュ分離を検証します。
 
 ## Credits
 
@@ -63,3 +71,5 @@ https://kauntah-generate.fjtd.moe/ja/
   - 初出: ["KK's WS"](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/)（現在は閉鎖）
   - 詳細については「ねこみみカウンター」および「日下こかげ」で検索してください
   - 作者により、非営利目的での使用、改変、および再配布が許可されています
+
+- **アニメーション素材**: [Moe-Counter](https://github.com/journey-ad/Moe-Counter) (`rule34`); [source and license](./assets/blue2-100-rule34/README.md).

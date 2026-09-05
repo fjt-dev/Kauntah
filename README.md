@@ -32,6 +32,7 @@ https://kauntah-generate.fjtd.moe/
 | `asset`   | `?asset=normal-150` | `normal-150` (default) / `blue2-150` / `green-100` / `blue2-100` |
 | `offset`  | `?offset=1000`      | Initial value added to the count (max: 1,000,000)                |
 | `padding` | `?padding=4`        | Minimum display digits (1–16); pads with leading zeros           |
+| `animation` | `?animation=1` | `blue2-100` only: `1` enables GIF animation; `0` or omission keeps static images. Ignored for other themes or invalid values. |
 
 ### Mechanism
 
@@ -47,15 +48,22 @@ https://kauntah-generate.fjtd.moe/
 | Framework        | Hono                                    | Routing                                                              |
 | Counter          | SQLite-backed Durable Objects           | Atomic increment and the sole persistent count store                 |
 | Image Cache      | Workers KV                              | Generated SVG cache (24-hour TTL)                                    |
-| Image Processing | Native SVG rendering                    | Combines Base64 PNG digit assets in SVG                              |
+| Image Processing | Native SVG rendering                    | Combines Base64 PNG / GIF digit assets in SVG                              |
 | Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation (20 requests / 60 seconds per owner and IP) |
 
 ## Notes
+
+- Development and tests require Node.js 22.6.0 or later (`npm test` uses `--experimental-strip-types`).
 
 - Rate limiting: The count increases up to 20 times per 60 seconds for each owner and IP combination. Requests above the limit return the current counter image without increasing the count.
 - Each successful counter request performs one persistent write to its owner's SQLite-backed Durable Object.
 - Before deploying, run `npm run check` to type-check the Worker and verify that Wrangler can build its deployment bundle.
 - The original asset images are included in the repository for reference, but are not used directly at runtime. They are embedded as Base64-encoded strings in `src/assets/`.
+
+### Animation checks
+
+- `npm test`: checks parameters, all ten GIF digits, padding, and existing themes.
+- Start `npm run dev -- --local`, then run `npm run test:integration` in another terminal to check responses and separate static/animated caches.
 
 ## Credits
 
@@ -63,3 +71,5 @@ https://kauntah-generate.fjtd.moe/
   - Originally distributed on ["KK's WS"](https://web.archive.org/web/20090831104303/http://kokagex.hp.infoseek.co.jp/) (now closed)
   - For more details, search for "Nekomimi Counter" and "Kokage Kusaka"
   - Non-commercial use, modification, and redistribution are permitted by the author
+
+- **Animation assets**: [Moe-Counter](https://github.com/journey-ad/Moe-Counter) (`rule34`); [source and license](./assets/blue2-100-rule34/README.md).
