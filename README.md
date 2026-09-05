@@ -32,13 +32,7 @@ https://kauntah-generate.fjtd.moe/
 | `asset`   | `?asset=normal-150` | `normal-150` (default) / `blue2-150` / `green-100` / `blue2-100` |
 | `offset`  | `?offset=1000`      | Initial value added to the count (max: 1,000,000)                |
 | `padding` | `?padding=4`        | Minimum display digits (1–16); pads with leading zeros           |
-| `animation` | `?asset=blue2-100&animation=1` | `blue2-100` only: `1` enables GIF animation; `0` or omission keeps static images. Ignored for other themes or invalid values. |
-
-Enable animation (`animation=0` or omission keeps the static version):
-
-```html
-<img src="https://counter.fjtd.dev/counter?asset=blue2-100&amp;animation=1&amp;padding=4" referrerpolicy="origin" />
-```
+| `animation` | `?animation=1` | `blue2-100` only: `1` enables GIF animation; `0` or omission keeps static images. Ignored for other themes or invalid values. |
 
 ### Mechanism
 
