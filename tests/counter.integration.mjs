@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { randomInt, randomUUID } from 'node:crypto';
 const base = process.env.COUNTER_TEST_URL ?? 'http://localhost:8787';
 const referer = `https://animation-${randomUUID()}.example/`;
+const clientIp = '203.0.113.8';
 let requests = 0;
 let displayCount;
 const padding = 8;
@@ -11,7 +12,9 @@ async function get(asset, animation, expectedCache, format) {
   requests++;
   const params = new URLSearchParams({ asset, offset: String(displayCount - requests), padding: String(padding) });
   if (animation !== undefined) params.set('animation', animation);
-  const response = await fetch(`${base}/counter?${params}`, { headers: { referer } });
+  const response = await fetch(`${base}/counter?${params}`, {
+    headers: { referer, 'cf-connecting-ip': clientIp },
+  });
   assert.equal(response.status, 200);
   assert.equal(response.headers.get('Content-Type'), 'image/svg+xml');
   assert.equal(response.headers.get('X-Count-Incremented'), 'true');
@@ -47,4 +50,11 @@ assert.equal(await get('blue2-100', '0', 'HIT', 'png'), staticSvg);
 assert.equal(await get('blue2-100', 'invalid', 'HIT', 'png'), staticSvg);
 assert.equal(await get('blue2-100', 'rule34', 'HIT', 'png'), staticSvg);
 assert.equal(await get('green-100', undefined, 'HIT', 'png'), greenSvg);
+
+const noRefererResponse = await fetch(`${base}/counter`, {
+  headers: { 'cf-connecting-ip': clientIp },
+});
+assert.equal(noRefererResponse.status, 200);
+assert.equal(noRefererResponse.headers.get('X-Count-Incremented'), 'false');
+assert.match(await noRefererResponse.text(), /<use href="#d0"/);
 console.log('PASS: real Worker responses, offsets, padding, mode-specific cache MISS/HIT and fallback');

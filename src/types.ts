@@ -34,6 +34,9 @@ export const PADDING_MAX = 16;
 /** ownerの最大長（DB肥大化・DoS防止）*/
 export const OWNER_MAX_LENGTH = 253;
 
+/** WorkerからCounterDOへ接続元IPを渡す内部ヘッダー */
+export const CLIENT_IP_HEADER = "x-kauntah-client-ip";
+
 /** KV画像キャッシュのTTL: 24時間（秒）*/
 export const IMAGE_CACHE_TTL_SECONDS = 86_400;
 
@@ -61,15 +64,16 @@ export function parsePadding(value: string): number {
 
 /**
  * Refererヘッダーからownerを抽出する。
+ * 欠落・不正なRefererは共有ownerへ集約せずnullを返す。
  */
-export function extractOwner(referer: string | null): string {
-  if (!referer) return "unknown";
+export function extractOwner(referer: string | null): string | null {
+  if (!referer) return null;
   try {
     const url = new URL(referer);
     const host = url.hostname;
-    if (!/^[a-zA-Z0-9][a-zA-Z0-9\-.]{0,251}[a-zA-Z0-9]$/.test(host)) return "unknown";
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9\-.]{0,251}[a-zA-Z0-9]$/.test(host)) return null;
     return host.slice(0, OWNER_MAX_LENGTH);
   } catch {
-    return "unknown";
+    return null;
   }
 }

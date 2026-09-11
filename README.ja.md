@@ -38,6 +38,7 @@ https://kauntah-generate.fjtd.moe/ja/
 
 - Referer ヘッダーのホスト名に基づいて、自動的にサイト所有者を識別します。
 - ホストごとに独立したカウンターを作成します。
+- 有効な Referer がない要求は、共有カウンターを作成・更新せず0を表示します。
 - 独自の FQDN を持つサイトであれば、誰でも利用可能です。
 
 ## Tech Stack
@@ -49,14 +50,15 @@ https://kauntah-generate.fjtd.moe/ja/
 | カウンター         | SQLite-backed Durable Objects     | アトミックなインクリメントと唯一の永続カウントストア               |
 | 画像キャッシュ     | Workers KV                        | 生成済み SVG のキャッシュ（TTL 24時間）                            |
 | 画像処理           | ネイティブ SVG レンダリング       | Base64 PNG / GIF 桁画像を SVG で合成                                     |
-| レート制限         | Cloudflare Rate Limiting API      | カウントの不正な水増し防止（owner・IP あたり 20リクエスト / 60秒） |
+| レート制限         | Cloudflare Rate Limiting API      | カウントの不正な水増し防止と新規owner作成数の制限                  |
 
 ## Notes
 
 - 開発・テストにはNode.js 22.6.0以降が必要です（テストで`--experimental-strip-types`を使用）。
 
 - レート制限：所有者とIPアドレスの組み合わせごとに、カウントは60秒間に最大20回まで増加します。制限を超えたリクエストに対しては、カウントを増やさず現在のカウンター画像が返されます。
-- カウンターへのリクエストが成功するたびに、所有者のSQLiteベースのDurable Objectに対して1回の永続的な書き込みが行われます。
+- 新規ownerの作成は、IPアドレスごとに60秒間に最大5件までです。既存ownerへのアクセスは、この作成用制限を消費しません。
+- 有効なRefererを持つカウンター要求が成功するたびに、所有者のSQLiteベースのDurable Objectに対して1回の永続的な書き込みが行われます。
 - デプロイする前に、`npm run check`を実行してWorkerの型チェックを行い、Wranglerがデプロイ用のバンドルをビルドできることを確認してください。
 - 元の画像アセットは参照用にリポジトリに含まれていますが、実行時には直接使用されません。これらはBase64エンコードされた文字列として`src/assets/`に埋め込まれています。
 

@@ -9,6 +9,7 @@ import {
   parseAnimation,
   parseOffset,
   parsePadding,
+  CLIENT_IP_HEADER,
   IMAGE_CACHE_TTL_SECONDS,
 } from "./types.ts";
 import { CounterDO } from "./counter.ts";
@@ -21,6 +22,8 @@ export interface Env {
   IMAGE_CACHE: KVNamespace;
   /** Cloudflare Rate Limiting API */
   RATE_LIMITER: RateLimit;
+  /** 新規owner作成を接続元IPごとに制限する */
+  OWNER_RATE_LIMITER: RateLimit;
 }
 
 // Durable Object クラスを再エクスポート（wrangler.toml の class_name と対応）
@@ -62,25 +65,31 @@ app.get("/counter", async (c) => {
   // ── 3. レート制限（カウンター水増し防止） ──────────────────
   // Cloudflare Rate Limiting API を使用。
   // DDoS・大量リクエストはCloudflare WAFがエッジで遮断するため、
-  // ここでは「同一ownerに対する同一IPからのカウンター水増し」のみを対象とする。
-  const ip =
-    c.req.header("cf-connecting-ip") ??
-    c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ??
-    "unknown";
+  // ここではカウンター水増しと新規ownerの大量作成を対象とする。
+  const ip = c.req.header("cf-connecting-ip") ?? "unknown";
+  let count = 0;
+  let countIncremented = false;
 
-  const rateLimitKey = JSON.stringify([owner, ip]);
-  const { success: shouldIncrement } = await env.RATE_LIMITER.limit({ key: rateLimitKey });
+  if (owner !== null) {
+    const rateLimitKey = JSON.stringify([owner, ip]);
+    const { success: shouldIncrement } = await env.RATE_LIMITER.limit({ key: rateLimitKey });
 
-  // ── 4. カウントの取得（Durable Object）────────────────────
-  // ownerごとに固定のDOインスタンスにルーティングする。
-  // idFromName は同じ文字列に対して常に同じIDを返す。
-  // レート制限超過時はインクリメントせず現在値のみを取得する。
-  const doId = env.COUNTER.idFromName(owner);
-  const stub = env.COUNTER.get(doId);
-  const operation = shouldIncrement ? "increment" : "current";
-  const res = await stub.fetch(new Request(`https://do/${operation}`));
-  const rawCount = await res.text();
-  const count = parseInt(rawCount, 10);
+    // ── 4. カウントの取得（Durable Object）──────────────────
+    // ownerごとに固定のDOインスタンスにルーティングする。
+    // idFromName は同じ文字列に対して常に同じIDを返す。
+    // レート制限超過時はインクリメントせず現在値のみを取得する。
+    const doId = env.COUNTER.idFromName(owner);
+    const stub = env.COUNTER.get(doId);
+    const operation = shouldIncrement ? "increment" : "current";
+    const res = await stub.fetch(new Request(`https://do/${operation}`, {
+      headers: { [CLIENT_IP_HEADER]: ip },
+    }));
+    if (!res.ok && res.status !== 429) {
+      throw new Error(`CounterDO returned ${res.status}`);
+    }
+    count = parseInt(await res.text(), 10);
+    countIncremented = res.headers.get("X-Count-Incremented") === "true";
+  }
 
   const displayCount = count + offset;
 
@@ -99,7 +108,7 @@ app.get("/counter", async (c) => {
         "Content-Type": "image/svg+xml",
         "Cache-Control": "no-store",
         "X-Cache": "HIT",
-        "X-Count-Incremented": String(shouldIncrement),
+        "X-Count-Incremented": String(countIncremented),
       },
     });
   }
@@ -121,7 +130,7 @@ app.get("/counter", async (c) => {
       "Content-Type": "image/svg+xml",
       "Cache-Control": "no-store",
       "X-Cache": "MISS",
-      "X-Count-Incremented": String(shouldIncrement),
+      "X-Count-Incremented": String(countIncremented),
     },
   });
 });

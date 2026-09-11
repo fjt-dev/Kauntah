@@ -23,6 +23,14 @@ namespace_id = "1"
 limit = 20
 period = 60
 
+[[ratelimits]]
+name = "OWNER_RATE_LIMITER"
+namespace_id = "2"
+
+[ratelimits.simple]
+limit = 5
+period = 60
+
 [observability.logs]
 enabled = true
 invocation_logs = true

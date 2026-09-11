@@ -38,6 +38,7 @@ https://kauntah-generate.fjtd.moe/
 
 - Automatically identifies the owner based on the hostname of the Referer header.
 - Creates an independent counter for each host.
+- Requests without a valid Referer render zero without creating or updating a shared counter.
 - Available for use by anyone with a site that has its own FQDN.
 
 ## Tech Stack
@@ -49,14 +50,15 @@ https://kauntah-generate.fjtd.moe/
 | Counter          | SQLite-backed Durable Objects           | Atomic increment and the sole persistent count store                 |
 | Image Cache      | Workers KV                              | Generated SVG cache (24-hour TTL)                                    |
 | Image Processing | Native SVG rendering                    | Combines Base64 PNG / GIF digit assets in SVG                              |
-| Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation (20 requests / 60 seconds per owner and IP) |
+| Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation and limits new owner creation                |
 
 ## Notes
 
 - Development and tests require Node.js 22.6.0 or later (`npm test` uses `--experimental-strip-types`).
 
 - Rate limiting: The count increases up to 20 times per 60 seconds for each owner and IP combination. Requests above the limit return the current counter image without increasing the count.
-- Each successful counter request performs one persistent write to its owner's SQLite-backed Durable Object.
+- New owner creation is limited to 5 owners per 60 seconds for each IP. Existing owners do not consume this separate limit.
+- Each successful counter request with a valid Referer performs one persistent write to its owner's SQLite-backed Durable Object.
 - Before deploying, run `npm run check` to type-check the Worker and verify that Wrangler can build its deployment bundle.
 - The original asset images are included in the repository for reference, but are not used directly at runtime. They are embedded as Base64-encoded strings in `src/assets/`.
 
