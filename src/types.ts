@@ -1,20 +1,14 @@
 // src/types.ts
 /// <reference types="@cloudflare/workers-types" />
 
-export type AssetType = "normal-150" | "blue2-150" | "green-100" | "blue2-100";
-
-export type AnimationType = "none" | "rule34";
-
-/** rule34 は blue2-100 専用。1のみ有効。0・省略・不正値・他のアセットは静止画にする。 */
-export function parseAnimation(value: string, asset: AssetType): AnimationType {
-  return asset === "blue2-100" && value === "1" ? "rule34" : "none";
-}
+export type AssetType = "normal-150" | "blue2-150" | "green-100" | "blue2-100" | "rule34";
 
 export const ASSET_TYPES: ReadonlySet<string> = new Set([
   "normal-150",
   "blue2-150",
   "green-100",
   "blue2-100",
+  "rule34",
 ]);
 
 export const ASSET_DIMENSIONS: Record<AssetType, { width: number; height: number }> = {
@@ -22,6 +16,7 @@ export const ASSET_DIMENSIONS: Record<AssetType, { width: number; height: number
   "blue2-150":  { width: 68, height: 150 },
   "blue2-100":  { width: 45, height: 100 },
   "green-100":  { width: 45, height: 100 },
+  "rule34":     { width: 45, height: 100 },
 };
 
 /** offsetの上限（意図しない巨大カウント防止）*/
@@ -44,7 +39,8 @@ export function parseAssetType(value: string): AssetType {
   if (
     value === "blue2-150" ||
     value === "green-100" ||
-    value === "blue2-100"
+    value === "blue2-100" ||
+    value === "rule34"
   ) return value;
   return "normal-150"; // デフォルト
 }

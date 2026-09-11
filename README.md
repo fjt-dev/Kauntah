@@ -24,15 +24,21 @@ https://kauntah-generate.fjtd.moe/
 | `blue2-150`            | Ver.0.93 | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
 | `blue2-100`            | Ver.0.93 | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
 | `green-100`            | Ver.0.93 | ![green-100](./assets/preview/green-100_preview.png)   |
+| `rule34` | Moe-Counter | ![rule34](./assets/rule34/0.gif) |
 
 ### Parameters
 
 | Parameter | Example             | Description                                                      |
 | --------- | ------------------- | ---------------------------------------------------------------- |
-| `asset`   | `?asset=normal-150` | `normal-150` (default) / `blue2-150` / `green-100` / `blue2-100` |
+| `asset`   | `?asset=normal-150` | `normal-150` (default) / `blue2-150` / `green-100` / `blue2-100` / `rule34` |
 | `offset`  | `?offset=1000`      | Initial value added to the count (max: 1,000,000)                |
 | `padding` | `?padding=4`        | Minimum display digits (1–16); pads with leading zeros           |
-| `animation` | `?animation=1` | `blue2-100` only: `1` enables GIF animation; `0` or omission keeps static images. Ignored for other themes or invalid values. |
+
+`rule34` is an independent animated design. Use `?asset=rule34` instead of the former `?asset=blue2-100&animation=1`. The `animation` parameter is no longer used; `blue2-100` always uses its original static images.
+
+```html
+<img src="https://counter.fjtd.dev/counter?asset=rule34" referrerpolicy="origin" />
+```
 
 ### Mechanism
 
@@ -62,10 +68,10 @@ https://kauntah-generate.fjtd.moe/
 - Before deploying, run `npm run check` to type-check the Worker and verify that Wrangler can build its deployment bundle.
 - The original asset images are included in the repository for reference, but are not used directly at runtime. They are embedded as Base64-encoded strings in `src/assets/`.
 
-### Animation checks
+### Theme checks
 
 - `npm test`: checks parameters, all ten GIF digits, padding, and existing themes.
-- Start `npm run dev -- --local`, then run `npm run test:integration` in another terminal to check responses and separate static/animated caches.
+- Start `npm run dev -- --local`, then run `npm run test:integration` in another terminal to check responses and separate theme caches.
 
 ## Credits
 
@@ -74,4 +80,4 @@ https://kauntah-generate.fjtd.moe/
   - For more details, search for "Nekomimi Counter" and "Kokage Kusaka"
   - Non-commercial use, modification, and redistribution are permitted by the author
 
-- **Animation assets**: [Moe-Counter](https://github.com/journey-ad/Moe-Counter) (`rule34`); [source and license](./assets/blue2-100-rule34/README.md).
+- **Animation assets**: [Moe-Counter](https://github.com/journey-ad/Moe-Counter) (`rule34`); [source and license](./assets/rule34/README.md).
