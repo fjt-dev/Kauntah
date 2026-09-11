@@ -17,11 +17,11 @@
     "test:integration": "node tests/counter.integration.mjs"
   },
   "dependencies": {
-    "hono": "^4.13.3"
+    "hono": "4.13.5"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20260815.1",
     "typescript": "^5.0.0",
-    "wrangler": "^4.124.0"
+    "wrangler": "4.131.0"
   }
 }
