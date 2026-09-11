@@ -4,23 +4,31 @@ import { CounterDO } from '../src/counter.ts';
 import app from '../src/index.ts';
 import { CLIENT_IP_HEADER, extractOwner } from '../src/types.ts';
 
-function createCounter(creationAllowed = true) {
+function createCounter(creationAllowed = true, limitGate = Promise.resolve()) {
   const values = new Map();
   const rateLimitKeys = [];
-  const ctx = {
-    storage: {
-      async get(key) {
-        return values.get(key);
-      },
-      async put(key, value) {
-        values.set(key, value);
-      },
+  let transactionQueue = Promise.resolve();
+  const storage = {
+    async get(key) {
+      return values.get(key);
     },
+    async put(key, value) {
+      values.set(key, value);
+    },
+    transaction(closure) {
+      const operation = transactionQueue.then(() => closure(storage));
+      transactionQueue = operation.then(() => undefined, () => undefined);
+      return operation;
+    },
+  };
+  const ctx = {
+    storage,
   };
   const env = {
     OWNER_RATE_LIMITER: {
       async limit({ key }) {
         rateLimitKeys.push(key);
+        await limitGate;
         return { success: creationAllowed };
       },
     },
@@ -56,6 +64,29 @@ test('new owner creation is limited by client IP, but existing owners do not con
   assert.equal(await second.text(), '2');
   assert.deepEqual(rateLimitKeys, ['203.0.113.8']);
   assert.equal(values.get('count'), 2);
+});
+
+test('concurrent first requests each increment after sharing owner creation', async () => {
+  let releaseLimit;
+  const limitGate = new Promise((resolve) => {
+    releaseLimit = resolve;
+  });
+  const { counter, rateLimitKeys, values } = createCounter(true, limitGate);
+  const headers = { [CLIENT_IP_HEADER]: '192.0.2.7' };
+
+  const responsePromises = Array.from({ length: 3 }, () =>
+    counter.fetch(new Request('https://do/increment', { headers }))
+  );
+  await Promise.resolve();
+  releaseLimit();
+
+  const responses = await Promise.all(responsePromises);
+  const counts = await Promise.all(responses.map((response) => response.text()));
+  assert.deepEqual(counts, ['1', '2', '3']);
+  assert.ok(responses.every((response) => response.status === 200));
+  assert.ok(responses.every((response) => response.headers.get('X-Count-Incremented') === 'true'));
+  assert.deepEqual(rateLimitKeys, ['192.0.2.7']);
+  assert.equal(values.get('count'), 3);
 });
 
 test('a rejected owner creation does not initialize or increment the counter', async () => {

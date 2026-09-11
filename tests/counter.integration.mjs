@@ -57,4 +57,18 @@ const noRefererResponse = await fetch(`${base}/counter`, {
 assert.equal(noRefererResponse.status, 200);
 assert.equal(noRefererResponse.headers.get('X-Count-Incremented'), 'false');
 assert.match(await noRefererResponse.text(), /<use href="#d0"/);
+
+const burstReferer = `https://burst-${randomUUID()}.example/`;
+const burstResponses = await Promise.all(Array.from({ length: 3 }, () =>
+  fetch(`${base}/counter`, {
+    headers: { referer: burstReferer, 'cf-connecting-ip': '198.51.100.23' },
+  })
+));
+assert.ok(burstResponses.every(response => response.status === 200));
+assert.ok(burstResponses.every(response => response.headers.get('X-Count-Incremented') === 'true'));
+const burstCounts = await Promise.all(burstResponses.map(async response => {
+  const svg = await response.text();
+  return Number([...svg.matchAll(/<use href="#d(\d)"/g)].map(match => match[1]).join(''));
+}));
+assert.deepEqual(burstCounts.sort((a, b) => a - b), [1, 2, 3]);
 console.log('PASS: real Worker responses, offsets, padding, mode-specific cache MISS/HIT and fallback');

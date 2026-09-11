@@ -44,25 +44,39 @@ export class CounterDO implements DurableObject {
 
   /**
    * カウントを+1して新しい値を返す。
-   * ストレージゲートと初回作成Promiseにより競合を防ぐ。
+   * 初回作成Promiseとストレージトランザクションにより競合を防ぐ。
    */
   async increment(clientIp: string): Promise<IncrementResult> {
-    const currentCount = await this.getCount();
+    await this.getCount();
 
     if (!this.initialized) {
       // ownerの初回作成だけIP単位の制限を消費する。同じDOへの同時初回要求は
-      // 1つのPromiseを共有し、作成枠と初回カウントを重複消費しない。
+      // 1つのPromiseを共有し、作成枠を重複消費しない。
+      const isCreator = this.creationPromise === null;
       const creationPromise = this.creationPromise ??= this.createOwner(clientIp);
+      let creationResult: IncrementResult;
       try {
-        return await creationPromise;
+        creationResult = await creationPromise;
       } finally {
         if (this.creationPromise === creationPromise) this.creationPromise = null;
       }
+
+      // 作成者の要求はcreateOwner()が初回値1を書き込んでいる。待機していた
+      // 各要求は、作成完了後にそれぞれ1回ずつ追加でインクリメントする。
+      if (isCreator || !creationResult.incremented) return creationResult;
     }
 
-    const nextCount = currentCount + 1;
-    // SQLite-backed DO storageを唯一の永続ストアとして使用する。
-    await this.ctx.storage.put("count", nextCount);
+    return this.incrementExistingOwner();
+  }
+
+  private async incrementExistingOwner(): Promise<IncrementResult> {
+    // 同時要求も1件ずつ確実に加算されるようread-modify-writeを原子的に行う。
+    const nextCount = await this.ctx.storage.transaction(async (txn) => {
+      const currentCount = (await txn.get<number>("count")) ?? 0;
+      const nextValue = currentCount + 1;
+      await txn.put("count", nextValue);
+      return nextValue;
+    });
     this.count = nextCount;
     return { count: nextCount, incremented: true };
   }
