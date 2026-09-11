@@ -1,4 +1,4 @@
-# blue2-100 animation: rule34
+# rule34 theme
 
 Original GIF files copied without modification from
 [journey-ad/Moe-Counter](https://github.com/journey-ad/Moe-Counter/tree/8abee4defc7c10b8d82103a36d826a24416e5169/assets/theme/rule34).

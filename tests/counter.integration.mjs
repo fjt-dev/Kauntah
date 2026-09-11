@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { randomInt, randomUUID } from 'node:crypto';
 const base = process.env.COUNTER_TEST_URL ?? 'http://localhost:8787';
-const referer = `https://animation-${randomUUID()}.example/`;
+const referer = `https://themes-${randomUUID()}.example/`;
 const clientIp = '203.0.113.8';
 let requests = 0;
 let displayCount;
@@ -29,13 +29,13 @@ async function get(asset, animation, expectedCache, format) {
 }
 // Offset is capped at 1,000,000. Probe a random value within that range,
 // retrying if an earlier run already populated any of the three cache keys.
-// At most 9 setup requests + 5 assertions stay below the 20-request rate limit.
+// At most 9 setup requests + 7 assertions stay below the 20-request rate limit.
 let coldCache;
 for (let attempt = 0; attempt < 3; attempt++) {
   displayCount = randomInt(100_000, 1_000_001);
   const staticSvg = await get('blue2-100', undefined, undefined, 'png');
   const staticCache = lastCache;
-  const animatedSvg = await get('blue2-100', '1', undefined, 'gif');
+  const animatedSvg = await get('rule34', undefined, undefined, 'gif');
   const animatedCache = lastCache;
   const greenSvg = await get('green-100', '1', undefined, 'png');
   if ([staticCache, animatedCache, lastCache].every(cache => cache === 'MISS')) {
@@ -45,7 +45,9 @@ for (let attempt = 0; attempt < 3; attempt++) {
 }
 assert.ok(coldCache, 'Could not find unused cache keys after 3 attempts');
 const { staticSvg, animatedSvg, greenSvg } = coldCache;
-assert.equal(await get('blue2-100', '1', 'HIT', 'gif'), animatedSvg);
+assert.equal(await get('rule34', undefined, 'HIT', 'gif'), animatedSvg);
+assert.equal(await get('blue2-100', '1', 'HIT', 'png'), staticSvg);
+assert.equal(await get('rule34', '0', 'HIT', 'gif'), animatedSvg);
 assert.equal(await get('blue2-100', '0', 'HIT', 'png'), staticSvg);
 assert.equal(await get('blue2-100', 'invalid', 'HIT', 'png'), staticSvg);
 assert.equal(await get('blue2-100', 'rule34', 'HIT', 'png'), staticSvg);
@@ -71,4 +73,4 @@ const burstCounts = await Promise.all(burstResponses.map(async response => {
   return Number([...svg.matchAll(/<use href="#d(\d)"/g)].map(match => match[1]).join(''));
 }));
 assert.deepEqual(burstCounts.sort((a, b) => a - b), [1, 2, 3]);
-console.log('PASS: real Worker responses, offsets, padding, mode-specific cache MISS/HIT and fallback');
+console.log('PASS: real Worker responses, offsets, padding, theme-specific cache MISS/HIT and fallback');

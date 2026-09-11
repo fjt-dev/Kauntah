@@ -6,7 +6,6 @@ import { buildCounterSVG } from "./imageService.ts";
 import {
   extractOwner,
   parseAssetType,
-  parseAnimation,
   parseOffset,
   parsePadding,
   CLIENT_IP_HEADER,
@@ -44,8 +43,7 @@ app.get("/", (c) => c.redirect("https://github.com/fjt-dev/Kauntah", 301));
  * アクセスカウンター画像を返すメインエンドポイント。
  *
  * クエリパラメータ:
- *   asset  : "normal-150"（デフォルト）| "blue2-150" | "blue2-100" | "green-100"
- *   animation: "0"または省略で無効 | "1"で有効（blue2-100のみ）
+ *   asset  : "normal-150"（デフォルト）| "blue2-150" | "blue2-100" | "green-100" | "rule34"
  *   offset : カウントに加算する値（デフォルト: 0、最大: 1,000,000）
  *   padding: 最小表示桁数（デフォルト: 指定なし、範囲: 1〜16）
  */
@@ -58,7 +56,6 @@ app.get("/counter", async (c) => {
 
   // ── 2. クエリパラメータのパース ────────────────────────────
   const asset = parseAssetType(c.req.query("asset") ?? "");
-  const animation = parseAnimation(c.req.query("animation") ?? "", asset);
   const offset = parseOffset(c.req.query("offset") ?? "");
   const padding = parsePadding(c.req.query("padding") ?? "");
 
@@ -94,12 +91,9 @@ app.get("/counter", async (c) => {
   const displayCount = count + offset;
 
   // ── 5. SVGキャッシュの探索（Workers KV）──────────────────
-  const staticCacheKey = padding === 0
+  const cacheKey = padding === 0
     ? `svg:${asset}:${displayCount}`
     : `svg:${asset}:${displayCount}:padding:${padding}`;
-  const cacheKey = animation === "none"
-    ? staticCacheKey
-    : `${staticCacheKey}:animation:${animation}`;
   const cached = await env.IMAGE_CACHE.get(cacheKey, "text");
   if (cached) {
     return new Response(cached, {
@@ -114,7 +108,7 @@ app.get("/counter", async (c) => {
   }
 
   // ── 6. 動的SVG生成（キャッシュミス時）────────────────────
-  const svgStr = buildCounterSVG(displayCount, asset, padding, animation);
+  const svgStr = buildCounterSVG(displayCount, asset, padding);
 
   // KVへ非同期書き込み（レスポンスをブロックしない）
   c.executionCtx.waitUntil(

@@ -24,15 +24,21 @@ https://kauntah-generate.fjtd.moe/ja/
 | `blue2-150`             | Ver.0.93 | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
 | `blue2-100`             | Ver.0.93 | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
 | `green-100`             | Ver.0.93 | ![green-100](./assets/preview/green-100_preview.png)   |
+| `rule34` | Moe-Counter | ![rule34](./assets/rule34/0.gif) |
 
 ### Parameters
 
 | Parameter | Example             | Description                                                         |
 | --------- | ------------------- | ------------------------------------------------------------------- |
-| `asset`   | `?asset=normal-150` | `normal-150`（デフォルト）/ `blue2-150` / `green-100` / `blue2-100` |
+| `asset`   | `?asset=normal-150` | `normal-150`（デフォルト）/ `blue2-150` / `green-100` / `blue2-100` / `rule34` |
 | `offset`  | `?offset=1000`      | カウントに加算される初期値（最大：1,000,000）                       |
 | `padding` | `?padding=4`        | 最小表示桁数（1〜16）。指定桁数まで左側を0で埋めます                |
-| `animation` | `?animation=1` | `blue2-100`専用。`1`でGIFアニメーション、`0`または省略で静止画。他のテーマ・不正値では無効。 |
+
+`rule34` は独立したアニメーションデザインです。従来の `?asset=blue2-100&animation=1` は `?asset=rule34` に変更してください。`animation` パラメーターは廃止され、`blue2-100` は常に元の静止画を表示します。
+
+```html
+<img src="https://counter.fjtd.dev/counter?asset=rule34" referrerpolicy="origin" />
+```
 
 ### Mechanism
 
@@ -62,10 +68,10 @@ https://kauntah-generate.fjtd.moe/ja/
 - デプロイする前に、`npm run check`を実行してWorkerの型チェックを行い、Wranglerがデプロイ用のバンドルをビルドできることを確認してください。
 - 元の画像アセットは参照用にリポジトリに含まれていますが、実行時には直接使用されません。これらはBase64エンコードされた文字列として`src/assets/`に埋め込まれています。
 
-### アニメーションの検証
+### デザインの検証
 
 - `npm test`: パラメーター、全10桁のGIF、ゼロ埋め、既存テーマを検証します。
-- `npm run dev -- --local`を起動後、別のターミナルで`npm run test:integration`: レスポンスと静止画・動画のキャッシュ分離を検証します。
+- `npm run dev -- --local`を起動後、別のターミナルで`npm run test:integration`: レスポンスとデザインごとのキャッシュ分離を検証します。
 
 ## Credits
 
@@ -74,4 +80,4 @@ https://kauntah-generate.fjtd.moe/ja/
   - 詳細については「ねこみみカウンター」および「日下こかげ」で検索してください
   - 作者により、非営利目的での使用、改変、および再配布が許可されています
 
-- **アニメーション素材**: [Moe-Counter](https://github.com/journey-ad/Moe-Counter) (`rule34`); [source and license](./assets/blue2-100-rule34/README.md).
+- **アニメーション素材**: [Moe-Counter](https://github.com/journey-ad/Moe-Counter) (`rule34`); [source and license](./assets/rule34/README.md).
