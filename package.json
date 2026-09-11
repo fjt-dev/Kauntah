@@ -1,7 +1,7 @@
 {
   "name": "kauntah",
   "version": "2.0.0",
-  "description": "World easiest access counter \u2014 Cloudflare Workers edition",
+  "description": "World easiest access counter — Cloudflare Workers edition",
   "private": true,
   "engines": {
     "node": ">=22.6.0"
@@ -12,7 +12,8 @@
     "cf-typegen": "wrangler types",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && wrangler deploy --dry-run",
-    "security:audit": "npm audit && npm audit signatures",
+    "security:audit": "npm audit --omit=dev --audit-level=high && npm audit signatures",
+    "security:audit:full": "npm audit",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:integration": "node tests/counter.integration.mjs"
   },
