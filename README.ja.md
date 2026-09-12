@@ -12,27 +12,27 @@ Cloudflare Workers で動作する TypeScript ベースのアクセスカウン�
 <img src="https://counter.fjtd.dev/counter" referrerpolicy="origin" />
 ```
 
-### Generator (Preview)
+### Generator
 
-https://kauntah-generate.fjtd.moe/ja/
+https://kauntah-generate.fjtd.dev/ja
 
 ## theme
 
-| asset                   | version  | preview                                                |
-| ----------------------- | -------- | ------------------------------------------------------ |
-| `normal-150`（default） | Ver.0.91 | ![normal-150](./assets/preview/normal-150_preview.png) |
-| `blue2-150`             | Ver.0.93 | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
-| `blue2-100`             | Ver.0.93 | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
-| `green-100`             | Ver.0.93 | ![green-100](./assets/preview/green-100_preview.png)   |
-| `rule34` | Moe-Counter | ![rule34](./assets/rule34/0.gif) |
+| asset                   | version     | preview                                                |
+| ----------------------- | ----------- | ------------------------------------------------------ |
+| `normal-150`（default） | Ver.0.91    | ![normal-150](./assets/preview/normal-150_preview.png) |
+| `blue2-150`             | Ver.0.93    | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
+| `blue2-100`             | Ver.0.93    | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
+| `green-100`             | Ver.0.93    | ![green-100](./assets/preview/green-100_preview.png)   |
+| `rule34`                | Moe-Counter | ![rule34](./assets/preview/rule34_preview.gif)         |
 
 ### Parameters
 
-| Parameter | Example             | Description                                                         |
-| --------- | ------------------- | ------------------------------------------------------------------- |
+| Parameter | Example             | Description                                                                    |
+| --------- | ------------------- | ------------------------------------------------------------------------------ |
 | `asset`   | `?asset=normal-150` | `normal-150`（デフォルト）/ `blue2-150` / `green-100` / `blue2-100` / `rule34` |
-| `offset`  | `?offset=1000`      | カウントに加算される初期値（最大：1,000,000）                       |
-| `padding` | `?padding=4`        | 最小表示桁数（1〜16）。指定桁数まで左側を0で埋めます                |
+| `offset`  | `?offset=1000`      | カウントに加算される初期値（最大：1,000,000）                                  |
+| `padding` | `?padding=4`        | 最小表示桁数（1〜16）。指定桁数まで左側を0で埋めます                           |
 
 `rule34` は独立したアニメーションデザインです。従来の `?asset=blue2-100&animation=1` は `?asset=rule34` に変更してください。`animation` パラメーターは廃止され、`blue2-100` は常に元の静止画を表示します。
 
@@ -49,14 +49,14 @@ https://kauntah-generate.fjtd.moe/ja/
 
 ## Tech Stack
 
-| Layer              | Technology                        | Role                                                               |
-| ------------------ | --------------------------------- | ------------------------------------------------------------------ |
-| コンピューティング | Cloudflare Workers (Node.js 互換) | リクエスト処理                                                     |
-| フレームワーク     | Hono                              | ルーティング                                                       |
-| カウンター         | SQLite-backed Durable Objects     | アトミックなインクリメントと唯一の永続カウントストア               |
-| 画像キャッシュ     | Workers KV                        | 生成済み SVG のキャッシュ（TTL 24時間）                            |
-| 画像処理           | ネイティブ SVG レンダリング       | Base64 PNG / GIF 桁画像を SVG で合成                                     |
-| レート制限         | Cloudflare Rate Limiting API      | カウントの不正な水増し防止と新規owner作成数の制限                  |
+| Layer              | Technology                        | Role                                                 |
+| ------------------ | --------------------------------- | ---------------------------------------------------- |
+| コンピューティング | Cloudflare Workers (Node.js 互換) | リクエスト処理                                       |
+| フレームワーク     | Hono                              | ルーティング                                         |
+| カウンター         | SQLite-backed Durable Objects     | アトミックなインクリメントと唯一の永続カウントストア |
+| 画像キャッシュ     | Workers KV                        | 生成済み SVG のキャッシュ（TTL 24時間）              |
+| 画像処理           | ネイティブ SVG レンダリング       | Base64 PNG / GIF 桁画像を SVG で合成                 |
+| レート制限         | Cloudflare Rate Limiting API      | カウントの不正な水増し防止と新規owner作成数の制限    |
 
 ## Notes
 

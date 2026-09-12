@@ -12,27 +12,27 @@ Simply add the following tag to your page:
 <img src="https://counter.fjtd.dev/counter" referrerpolicy="origin" />
 ```
 
-### Generator (Preview)
+### Generator
 
-https://kauntah-generate.fjtd.moe/
+https://kauntah-generate.fjtd.dev
 
 ## theme
 
-| asset                  | version  | preview                                                |
-| ---------------------- | -------- | ------------------------------------------------------ |
-| `normal-150` (default) | Ver.0.91 | ![normal-150](./assets/preview/normal-150_preview.png) |
-| `blue2-150`            | Ver.0.93 | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
-| `blue2-100`            | Ver.0.93 | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
-| `green-100`            | Ver.0.93 | ![green-100](./assets/preview/green-100_preview.png)   |
-| `rule34` | Moe-Counter | ![rule34](./assets/rule34/0.gif) |
+| asset                  | version     | preview                                                |
+| ---------------------- | ----------- | ------------------------------------------------------ |
+| `normal-150` (default) | Ver.0.91    | ![normal-150](./assets/preview/normal-150_preview.png) |
+| `blue2-150`            | Ver.0.93    | ![blue2-150](./assets/preview/blue2-150_preview.png)   |
+| `blue2-100`            | Ver.0.93    | ![blue2-100](./assets/preview/blue2-100_preview.png)   |
+| `green-100`            | Ver.0.93    | ![green-100](./assets/preview/green-100_preview.png)   |
+| `rule34`               | Moe-Counter | ![rule34](./assets/preview/rule34_preview.gif)         |
 
 ### Parameters
 
-| Parameter | Example             | Description                                                      |
-| --------- | ------------------- | ---------------------------------------------------------------- |
+| Parameter | Example             | Description                                                                 |
+| --------- | ------------------- | --------------------------------------------------------------------------- |
 | `asset`   | `?asset=normal-150` | `normal-150` (default) / `blue2-150` / `green-100` / `blue2-100` / `rule34` |
-| `offset`  | `?offset=1000`      | Initial value added to the count (max: 1,000,000)                |
-| `padding` | `?padding=4`        | Minimum display digits (1–16); pads with leading zeros           |
+| `offset`  | `?offset=1000`      | Initial value added to the count (max: 1,000,000)                           |
+| `padding` | `?padding=4`        | Minimum display digits (1–16); pads with leading zeros                      |
 
 `rule34` is an independent animated design. Use `?asset=rule34` instead of the former `?asset=blue2-100&animation=1`. The `animation` parameter is no longer used; `blue2-100` always uses its original static images.
 
@@ -49,14 +49,14 @@ https://kauntah-generate.fjtd.moe/
 
 ## Tech Stack
 
-| Layer            | Technology                              | Role                                                                 |
-| ---------------- | --------------------------------------- | -------------------------------------------------------------------- |
-| Compute          | Cloudflare Workers (Node.js compatible) | Request handling                                                     |
-| Framework        | Hono                                    | Routing                                                              |
-| Counter          | SQLite-backed Durable Objects           | Atomic increment and the sole persistent count store                 |
-| Image Cache      | Workers KV                              | Generated SVG cache (24-hour TTL)                                    |
-| Image Processing | Native SVG rendering                    | Combines Base64 PNG / GIF digit assets in SVG                              |
-| Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation and limits new owner creation                |
+| Layer            | Technology                              | Role                                                   |
+| ---------------- | --------------------------------------- | ------------------------------------------------------ |
+| Compute          | Cloudflare Workers (Node.js compatible) | Request handling                                       |
+| Framework        | Hono                                    | Routing                                                |
+| Counter          | SQLite-backed Durable Objects           | Atomic increment and the sole persistent count store   |
+| Image Cache      | Workers KV                              | Generated SVG cache (24-hour TTL)                      |
+| Image Processing | Native SVG rendering                    | Combines Base64 PNG / GIF digit assets in SVG          |
+| Rate Limiting    | Cloudflare Rate Limiting API            | Prevents count inflation and limits new owner creation |
 
 ## Notes
 
